@@ -1,0 +1,83 @@
+{
+  "extends": ["airbnb", "next", "prettier"],
+  "plugins": ["prettier", "@typescript-eslint", "unused-imports"],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {} // this loads <rootdir>/tsconfig.json to eslint
+    }
+  },
+  "parser": "@typescript-eslint/parser",
+  "globals": {
+    "JSX": "readonly"
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "react/require-default-props": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/jsx-filename-extension": [2, { "extensions": [".ts", ".tsx"] }],
+    "react/no-unstable-nested-components": ["warn", { "allowAsProps": true }],
+    "react/function-component-definition": [
+      "error",
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ],
+    "no-use-before-define": ["error", { "variables": false }],
+    "no-underscore-dangle": "off",
+    "import/prefer-default-export": "off",
+    "import/extensions": [
+      "error",
+      {
+        "ts": "never",
+        "json": "off"
+      }
+    ],
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    // Will not catch import Fragment from react in case there is a shorthand <>...</> used in code
+    "unused-imports/no-unused-vars": [
+      "error",
+      { "vars": "all", "varsIgnorePattern": "^_", "args": "all", "argsIgnorePattern": "^_" }
+    ],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
+    "no-nested-ternary": "off",
+    "arrow-body-style": "off",
+    "sort-imports": [
+      "error",
+      {
+        "allowSeparatedGroups": true,
+        "ignoreCase": false,
+        "ignoreDeclarationSort": true, // don't want to sort import lines, use import/order instead
+        "ignoreMemberSort": false,
+        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+      }
+    ],
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin", // Built-in imports (come from NodeJS native) go first
+          "external", // <- External imports
+          "internal", // <- Absolute imports
+          ["sibling", "parent"], // <- Relative imports
+          "index", // <- index imports
+          "unknown" // <- unknown
+        ],
+        "newlines-between": "always",
+        "alphabetize": {
+          /* sort in ascending order. Options: ["ignore", "asc", "desc"] */
+          "order": "asc",
+          /* ignore case. Options: [true, false] */
+          "caseInsensitive": true
+        }
+      }
+    ]
+  }
+}

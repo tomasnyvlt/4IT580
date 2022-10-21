@@ -12,7 +12,7 @@ const App: FC<AppProps> = ({ pageProps, Component }) => {
   return (
     <>
       <Head>
-        <title>title</title>
+        <title>Sportify</title>
       </Head>
 
       <ApolloProvider client={apolloClient}>

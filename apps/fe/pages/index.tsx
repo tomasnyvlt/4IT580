@@ -1,17 +1,22 @@
-import { gql } from "@apollo/client";
-import { Button } from "@chakra-ui/react";
-import client from "apollo/client";
+import { Button, Container } from "@chakra-ui/react";
+import Landing from "components/layouts/Landing";
+import Page from "components/layouts/Page";
 import { NextPage } from "next";
 
-const Index: NextPage = (props) => {
-  console.log(props)
+const IndexPage: NextPage = (props) => {
+
   return (
-    <div><Button>chakra button</Button></div>
+    <Landing>
+      <Container>
+        <Button>chakra button</Button>
+      </Container>
+    </Landing>
   );
 };
 
-export default Index;
+export default IndexPage;
 
+{/*
 export async function getServerSideProps() {
   const { data } = await client.query({
     query: gql`
@@ -27,3 +32,4 @@ export async function getServerSideProps() {
     },
   };
 }
+*/}

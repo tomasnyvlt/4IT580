@@ -1,0 +1,14 @@
+/node_modules/
+npm-debug.log
+
+/build/
+/dist/
+
+# custom
+/.env.local
+
+/log/*
+!/log/.gitkeep
+
+/tmp/*
+!/tmp/restart.txt

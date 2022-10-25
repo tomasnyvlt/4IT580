@@ -1,0 +1,46 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Back-end app for 4IT580 course",
+  "main": "build/main.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
+    "start": "node ./build/main.js",
+    "prestart": "run-s build",
+    "build": "backpack build",
+    "postbuild": "nodetouch tmp/restart.txt",
+    "build:watch": "nodemon --watch ./src --exec 'npm run build'",
+    "prettier": "prettier --write \"src/**/*.js\" README.md"
+  },
+  "dependencies": {
+    "apollo-server-core": "^3.3.0",
+    "apollo-server-express": "^3.3.0",
+    "argon2": "^0.29.1",
+    "cors": "^2.8.5",
+    "dotenv-flow": "^3.2.0",
+    "express": "^4.17.1",
+    "graphql": "^16.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash.merge": "^4.6.2",
+    "mariadb": "^3.0.1",
+    "mysql2": "^2.3.3"
+  },
+  "devDependencies": {
+    "@graphql-tools/schema": "^9.0.2",
+    "@prisma/client": "^4.5.0",
+    "@types/dotenv-flow": "^3.2.0",
+    "@types/express": "^4.17.14",
+    "@types/lodash.merge": "^4.6.7",
+    "@types/node": "^18.11.3",
+    "backpack-core": "^0.8.4",
+    "concurrently": "^7.4.0",
+    "nodemon": "^2.0.12",
+    "prettier": "^2.7.1",
+    "prisma": "^4.5.0",
+    "touch": "^3.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
+  }
+}

@@ -2,6 +2,7 @@ import merge from 'lodash.merge';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { typeDef as EventType, resolvers as eventTypeResolvers } from './event_type/index';
 import { typeDef as Team, resolvers as teamResolvers } from './team/index'
+import { typeDef as TeamHasPlayers, resolvers as teamHasPlayersResolvers } from './team_has_players/index'
 
 // based on - https://www.apollographql.com/blog/backend/schema-design/modularizing-your-graphql-schema-code/
 const Query = /* GraphQL */ `
@@ -19,6 +20,6 @@ const Mutation = /* GraphQL */ `
 const resolvers = {};
 
 export const schema = makeExecutableSchema({
-  typeDefs: [Query, Mutation, EventType, Team],
-  resolvers: merge(resolvers, eventTypeResolvers, teamResolvers),
+  typeDefs: [Query, Mutation, EventType, Team, TeamHasPlayers],
+  resolvers: merge(resolvers, eventTypeResolvers, teamResolvers, teamHasPlayersResolvers),
 });

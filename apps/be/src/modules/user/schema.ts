@@ -16,6 +16,6 @@ export const typeDef = /* GraphQL */ `
     }
 
     extend type Mutation{
-        registerLogin(firstName: String!, lastName: String!, userName: String, email: String, password: String): User!
+        registerLogin(firstName: String!, lastName: String!, userName: String!, email: String!, password: String!): Token!
     }
 `;

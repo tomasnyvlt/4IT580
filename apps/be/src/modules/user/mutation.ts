@@ -1,4 +1,5 @@
-import { hashPassword } from "./use_cases/hashPassword.js";
+import { hashPassword } from "../../libs/password.js";
+import { createToken } from "../../libs/token.js";
 
 type RegisterLoginArgs = {
     firstName: string,
@@ -24,13 +25,11 @@ export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Con
             password: hashedPassword
         }
     });
+    const token = createToken({
+        id_user: user.id_user,
+        loggedIn: true
+    })
     return {
-        id: user.id_user,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        userName: user.user_name,
-        email: user.email,
-        timeRegistered: user.time_registered?.toISOString(),
-        timeLastLogin: user.time_last_login?.toISOString()
-    };
+        content: token
+    }
 }

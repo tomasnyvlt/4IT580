@@ -1,7 +1,7 @@
 import { Box, Button, FormLabel, HStack, Input, Stack, Text, Select, FormControl } from "@chakra-ui/react";
 import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import * as yup from "yup";
+import { object, string, number, ref } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputField from "shared/hook-form/FormField";
 
@@ -13,23 +13,23 @@ type RegisterInputs = {
   name: string;
   surname: string;
   nickname?: string;
-  date: number;
+  day: number;
   month: string;
   year: number;
 };
 
 const RegisterForm: FC = () => {
-  const signInFormSchema = yup.object().shape({
-    email: yup.string().email().required(),
-    emailConfirmation: yup.string().oneOf([yup.ref("email"), null], "Emails must match"),
-    password: yup.string().required("password is required"),
-    passwordConfirmation: yup.string().oneOf([yup.ref("password"), null], "passwords must match"),
-    name: yup.string().required(),
-    surname: yup.string().required(),
-    nickname: yup.string(),
-    date: yup.date().required("date is invalid"),
-    month: yup.string().required("month is invalid"),
-    year: yup.number().required("year is invalid")
+  const signInFormSchema = object().shape({
+    email: string().email().required(),
+    emailConfirmation: string().oneOf([ref("email"), null], "Emails must match"),
+    password: string().required("password is required"),
+    passwordConfirmation: string().oneOf([ref("password"), null], "passwords must match"),
+    name: string().required(),
+    surname: string().required(),
+    nickname: string(),
+    day: number().required("date is invalid"),
+    month: string().required("month is invalid"),
+    year: number().required("year is invalid")
   });
   const methods = useForm<RegisterInputs>({
     resolver: yupResolver(signInFormSchema),
@@ -40,12 +40,12 @@ const RegisterForm: FC = () => {
       passwordConfirmation: "",
       name: "",
       surname: "",
-      nickname: ""
+      nickname: "",
+      month: "mesic"
     }
   });
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
     reset
@@ -56,11 +56,26 @@ const RegisterForm: FC = () => {
     reset();
   };
 
+  const months = [
+    "Leden",
+    "Únor",
+    "Březen",
+    "Duben",
+    "Květen",
+    "Červen",
+    "Červenec",
+    "Srpen",
+    "Září",
+    "Říjen",
+    "Listopad",
+    "Prosinec"
+  ];
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3} mb={"1rem"}>
-          <InputField name="email" label="Jaky je tvuj email?" placeholder="napis email" />
+          <InputField name="email" type="email" label="Jaky je tvuj email?" placeholder="napis email" />
           <InputField name="emailConfirmation" label="Podtvrdi email" placeholder="napis email znovu" />
           <InputField name="password" label="Vymysli si heslo" placeholder="vytvor heslo" />
           <InputField name="passwordConfirmation" label="Podtrdi heslo" placeholder="napis heslo znovu" />
@@ -76,34 +91,13 @@ const RegisterForm: FC = () => {
             Který den jseš se narodil?
           </Text>
           <HStack spacing={3} justifyContent="space-between">
-            <Box maxW="300px">
-              <FormLabel>Den</FormLabel>
-              <Input placeholder="dd" {...register("date")} />
-              <p>{errors.date?.message}</p>
-            </Box>
-            <Box maxW="300px">
-              <FormLabel>Měsic</FormLabel>
-              <Select placeholder="měsic" {...register("month")}>
-                <option>Leden</option>
-                <option>Únor</option>
-                <option>Březen</option>
-                <option>Duben</option>
-                <option>Květen</option>
-                <option>Červen</option>
-                <option>Červenec</option>
-                <option>Srpen</option>
-                <option>Září</option>
-                <option>Říjen</option>
-                <option>Listopad </option>
-                <option>Prosinec </option>
-              </Select>
-              <p>{errors.month?.message}</p>
-            </Box>
-            <Box maxW="300px">
-              <FormLabel>Rok</FormLabel>
-              <Input placeholder="yyyy" {...register("year")} />
-              <p>{errors.year?.message}</p>
-            </Box>
+            <InputField name="day" label="Den" placeholder="dd" />
+            <InputField name="month" label="Mesic" Component={Select}>
+              {months.map((month) => {
+                return <option>{month}</option>;
+              })}
+            </InputField>
+            <InputField name="year" label="Rok" placeholder="yyyy" />
           </HStack>
         </Stack>
         <Button type="submit">Zaregestrovat se</Button>

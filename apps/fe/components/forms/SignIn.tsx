@@ -1,7 +1,7 @@
 import { Box, Button, FormLabel, Input, Stack, StackDivider, VStack } from "@chakra-ui/react";
 import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import * as yup from "yup";
+import { object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputField from "shared/hook-form/FormField";
 
@@ -11,9 +11,9 @@ type SignInInputs = {
 };
 
 const SignInForm: FC = () => {
-  const signInFormSchema = yup.object().shape({
-    email: yup.string().email().required("Email je povinny"),
-    password: yup.string().min(8).required("Heslo je povinne")
+  const signInFormSchema = object().shape({
+    email: string().email().required("Email je povinny"),
+    password: string().min(8).required("Heslo je povinne")
   });
   const methods = useForm<SignInInputs>({
     resolver: yupResolver(signInFormSchema),
@@ -35,10 +35,10 @@ const SignInForm: FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3} mb={"1rem"}>
           <Box>
-            <InputField name="email" label="Email" placeholder="zadej email" />
+            <InputField name="email" label="Email" type="email" placeholder="zadej email" />
           </Box>
           <Box>
-            <InputField name="password" label="Heslo" placeholder="zadej heslo" />
+            <InputField name="password" label="Heslo" type="password" placeholder="zadej heslo" />
           </Box>
         </Stack>
         <Button type="submit">Prihlasit se</Button>

@@ -3,9 +3,9 @@ import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
 import { PrismaClient } from '@prisma/client'
-
-import { MOCKS, PORT } from './config/variables.js';
+import { PORT } from './config/variables.js';
 import { schema } from './modules/executableSchema.js';
+import { verifyTokenFromHeader } from './libs/token.js';
 
 const main = async () => {
   const app = express();
@@ -18,7 +18,7 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema,
     context: async ({ req }) => {
-      const auth = req.headers.Authorization || '';
+      const auth:TokenContent = verifyTokenFromHeader(req.headers.Authorization);
 
       const context:Context = {
         prisma,

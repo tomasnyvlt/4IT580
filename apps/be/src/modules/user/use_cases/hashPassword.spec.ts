@@ -4,7 +4,6 @@ import { hashPassword } from "./hashPassword.js"
 describe('Password hashing', () => {
     test("Converts password to other string", async () => {
         const hashed = await hashPassword("test123");
-        console.log("hashed", hashed)
         expect(hashed).not.toBe("test123");
     })
     test("For empty password with length under 6 characters throw error", async () => {

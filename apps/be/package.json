@@ -12,7 +12,8 @@
     "build": "backpack build",
     "postbuild": "nodetouch tmp/restart.txt",
     "build:watch": "nodemon --watch ./src --exec 'npm run build'",
-    "prettier": "prettier --write \"src/**/*.js\" README.md"
+    "prettier": "prettier --write \"src/**/*.js\" README.md",
+    "test": "jest ./dist"
   },
   "dependencies": {
     "apollo-server-core": "^3.3.0",
@@ -22,6 +23,7 @@
     "dotenv-flow": "^3.2.0",
     "express": "^4.17.1",
     "graphql": "^16.6.0",
+    "jest": "^29.2.2",
     "jsonwebtoken": "^8.5.1",
     "lodash.merge": "^4.6.2",
     "mariadb": "^3.0.1",

@@ -1,13 +1,6 @@
-import dotenv, { DotenvConfigOptions } from 'dotenv-flow';
-import path from 'path';
+import dotenv from 'dotenv-flow';
 
-const dir = path.join(__dirname, "../../")
-const dotenvConfig:DotenvConfigOptions = {
-    path: dir
-} 
-console.log(dir)
-
-dotenv.config(dotenvConfig);
+dotenv.config();
 
 
 export const MOCKS = process.env.MOCKS || "";

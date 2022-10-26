@@ -1,4 +1,4 @@
-import { hashPassword } from "./use_cases/hashPassword";
+import { hashPassword } from "./use_cases/hashPassword.js";
 
 type RegisterLoginArgs = {
     firstName: string,
@@ -8,6 +8,29 @@ type RegisterLoginArgs = {
     password: string
 }
 export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Context) => {
-    const hashedPassword = hashPassword(args.password)
-    //TO-DO Add user to the database
+    const hashedPassword = await hashPassword(args.password)
+    const prisma = context.prisma;
+    const user = await prisma.user.create({
+        data: {
+            first_name: args.firstName,
+            last_name: args.lastName,
+            user_name: args.userName,
+            email: args.email
+        }
+    });
+    const login = await prisma.login.create({
+        data: {
+            id_user: user.id_user,
+            password: hashedPassword
+        }
+    });
+    return {
+        id: user.id_user,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        userName: user.user_name,
+        email: user.email,
+        timeRegistered: user.time_registered?.toISOString(),
+        timeLastLogin: user.time_last_login?.toISOString()
+    };
 }

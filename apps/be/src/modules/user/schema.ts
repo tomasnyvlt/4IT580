@@ -1,18 +1,18 @@
 import { gql } from "apollo-server-core";
 
-export const typeDef = gql`
+export const typeDef = /* GraphQL */ `
     type User{
         id: Int!
         firstName: String!
         lastName: String!
         userName: String!
         email: String!
-        registered: Date!
-        lastLogin: Date!
+        timeRegistered: String!
+        timeLastLogin: String!
     }
 
     extend type Query{
-        
+        user(id_user: String!): User!
     }
 
     extend type Mutation{

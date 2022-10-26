@@ -1,5 +1,5 @@
 import { describe, it, expect, test } from "@jest/globals";
-import { hashPassword } from "./hashPassword"
+import { hashPassword } from "./hashPassword.js"
 
 describe('Password hashing', () => {
     test("Converts password to other string", async () => {

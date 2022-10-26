@@ -4,8 +4,8 @@ import { ApolloServer } from 'apollo-server-express';
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
 import { PrismaClient } from '@prisma/client'
 
-import { MOCKS, PORT } from './config/variables';
-import { schema } from './modules/executableSchema';
+import { MOCKS, PORT } from './config/variables.js';
+import { schema } from './modules/executableSchema.js';
 
 const main = async () => {
   const app = express();

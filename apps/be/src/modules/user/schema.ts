@@ -12,7 +12,7 @@ export const typeDef = /* GraphQL */ `
     }
 
     extend type Query{
-        user(id_user: String!): User!
+        user(id_user: Int!): User!
     }
 
     extend type Mutation{

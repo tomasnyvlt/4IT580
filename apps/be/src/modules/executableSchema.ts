@@ -1,11 +1,13 @@
 import merge from 'lodash.merge';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import { typeDef as EventType, resolvers as eventTypeResolvers } from './event_type/index';
+import { typeDef as EventType, resolvers as eventTypeResolvers } from './event_type/index.js';
+import { typeDef as User, resolvers as userResolvers } from './user/index.js';
+import { typeDef as Token, resolvers as tokenResolvers } from './token/index.js';
 
 // based on - https://www.apollographql.com/blog/backend/schema-design/modularizing-your-graphql-schema-code/
 const Query = /* GraphQL */ `
   type Query {
-    _empty: String
+    test: String
   }
 `;
 
@@ -18,6 +20,6 @@ const Mutation = /* GraphQL */ `
 const resolvers = {};
 
 export const schema = makeExecutableSchema({
-  typeDefs: [Query, Mutation, EventType],
-  resolvers: merge(resolvers, eventTypeResolvers),
+  typeDefs: [Query, Mutation, User, EventType, Token],
+  resolvers: merge(resolvers, userResolvers, eventTypeResolvers, tokenResolvers),
 });

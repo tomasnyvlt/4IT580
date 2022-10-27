@@ -1,18 +1,23 @@
 import { useController } from "react-hook-form";
 
 import { FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/react";
-import React, { ComponentType, ReactNode } from "react";
+import { ComponentType, FC, ReactNode } from "react";
 
-type InputName = {
+type InputField = {
   name: string;
   label: string;
   placeholder?: string;
   type?: string;
   children?: ReactNode;
-  Component?: ComponentType<{ placeholder?: string; children: ReactNode }>;
+  Component?: ComponentType<ComponentField>;
 };
 
-function InputField({ name, label, placeholder, type, children, Component = Input, ...props }: InputName) {
+export type ComponentField = {
+  placeholder?: string;
+  children: ReactNode;
+};
+
+const InputField: FC<InputField> = ({ name, label, placeholder, type, children, Component = Input, ...props }) => {
   const controller = useController({
     name
   });
@@ -25,6 +30,6 @@ function InputField({ name, label, placeholder, type, children, Component = Inpu
       <FormErrorMessage>{error}</FormErrorMessage>
     </FormControl>
   );
-}
+};
 
 export default InputField;

@@ -20,16 +20,16 @@ type RegisterInputs = {
 
 const RegisterForm: FC = () => {
   const signInFormSchema = object().shape({
-    email: string().email().required(),
-    emailConfirmation: string().oneOf([ref("email"), null], "Emails must match"),
-    password: string().required("password is required"),
-    passwordConfirmation: string().oneOf([ref("password"), null], "passwords must match"),
-    name: string().required(),
-    surname: string().required(),
+    email: string().email().required("Email je povinný"),
+    emailConfirmation: string().oneOf([ref("email"), null], "Email má být stejný"),
+    password: string().min(8, "Heslo má obsahovat minimalně 8 znáku").required("Heslo je povinné"),
+    passwordConfirmation: string().oneOf([ref("password"), null], "Heslo má být stejné"),
+    name: string().required("Jméno je povinné"),
+    surname: string().required("Přijmení je povinné"),
     nickname: string(),
-    day: number().required("date is invalid"),
-    month: string().required("month is invalid"),
-    year: number().required("year is invalid")
+    day: number().required(),
+    month: string().required(),
+    year: number().required()
   });
   const methods = useForm<RegisterInputs>({
     resolver: yupResolver(signInFormSchema),
@@ -40,8 +40,7 @@ const RegisterForm: FC = () => {
       passwordConfirmation: "",
       name: "",
       surname: "",
-      nickname: "",
-      month: "mesic"
+      nickname: ""
     }
   });
 
@@ -76,7 +75,7 @@ const RegisterForm: FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3} mb={"1rem"}>
           <InputField name="email" type="email" label="Jaky je tvuj email?" placeholder="napis email" />
-          <InputField name="emailConfirmation" label="Podtvrdi email" placeholder="napis email znovu" />
+          <InputField name="emailConfirmation" type="email" label="Podtvrdi email" placeholder="napis email znovu" />
           <InputField name="password" label="Vymysli si heslo" placeholder="vytvor heslo" />
           <InputField name="passwordConfirmation" label="Podtrdi heslo" placeholder="napis heslo znovu" />
           <Text fontSize="md" as="b">
@@ -92,7 +91,7 @@ const RegisterForm: FC = () => {
           </Text>
           <HStack spacing={3} justifyContent="space-between">
             <InputField name="day" label="Den" placeholder="dd" />
-            <InputField name="month" label="Mesic" Component={Select}>
+            <InputField name="month" placeholder="mesic" label="Mesic" Component={Select}>
               {months.map((month) => {
                 return <option>{month}</option>;
               })}

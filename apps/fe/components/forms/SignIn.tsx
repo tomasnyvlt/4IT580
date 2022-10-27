@@ -13,7 +13,7 @@ type SignInInputs = {
 const SignInForm: FC = () => {
   const signInFormSchema = object().shape({
     email: string().email().required("Email je povinny"),
-    password: string().min(8).required("Heslo je povinne")
+    password: string().required("Heslo je povinne")
   });
   const methods = useForm<SignInInputs>({
     resolver: yupResolver(signInFormSchema),

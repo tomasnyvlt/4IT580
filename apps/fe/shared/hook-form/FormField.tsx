@@ -1,5 +1,4 @@
 import { useController } from "react-hook-form";
-
 import { FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/react";
 import { ComponentType, FC, ReactNode } from "react";
 
@@ -12,7 +11,7 @@ type InputField = {
   Component?: ComponentType<ComponentField>;
 };
 
-export type ComponentField = {
+type ComponentField = {
   placeholder?: string;
   children: ReactNode;
 };

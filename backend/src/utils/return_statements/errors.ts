@@ -36,4 +36,7 @@ export class GQLError {
   noMatches() {
     return this.error('No matches were found!', 'NO_MATCHES');
   }
+  expired(){
+    return this.error('Access token has expired!', 'EXPIRED');
+  }
 }

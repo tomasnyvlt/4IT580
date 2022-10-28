@@ -24,10 +24,8 @@ export const login = async(_:void, args: LoginArgs, context: Context) => {
     const passwordVerified = await comparePasswords(args.password, login.password);
     if(!passwordVerified) throw new Error("WRG_PSW");
 
-    const token = createToken({
-        id_user: user.id_user,
-        loggedIn: true
-    })
+    const token = createToken(user.id_user)
+    
     return {
         content: token
     }

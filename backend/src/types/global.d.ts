@@ -4,11 +4,11 @@ import { PrismaClient } from "@prisma/client";
 declare global{
     interface Context {
         prisma: PrismaClient,
-        auth: TokenContent
+        auth: AppUser
     }
 
-    interface TokenContent {
-        id_user: number|null,
-        loggedIn: boolean
+    interface AppUser {
+        readonly getUserID: () => number|null,
+        readonly isLoggedIn: () => boolean
     }
 }

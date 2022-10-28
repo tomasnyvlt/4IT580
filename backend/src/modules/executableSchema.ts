@@ -1,6 +1,6 @@
 import merge from 'lodash.merge';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import { typeDef as EventType, resolvers as eventTypeResolvers } from './event_type/index';
+import { typeDef as EventType, resolvers as eventTypeResolvers } from './event_type/index.js';
 import { typeDef as Team, resolvers as teamResolvers } from './team/index.js'
 import { typeDef as TeamHasPlayers, resolvers as teamHasPlayersResolvers } from './team_has_players/index.js'
 import { typeDef as TeamMetaData, resolvers as teamMetaDataResolvers } from './team_meta_data/index.js'

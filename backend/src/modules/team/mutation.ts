@@ -1,4 +1,4 @@
-import { GQLSuccess } from '../../utils/return_statements/success';
+import { GQLSuccess } from '../../utils/return_statements/success.js';
 
 type addTeamArgs = {
   name: string;

@@ -1,4 +1,4 @@
-import { deleteTeamArgs } from './mutation';
+import { deleteTeamArgs } from './mutation.js';
 
 export const teams = async (_: void, __: void, context: Context) => {
   const teams = await context.prisma.team.findMany();

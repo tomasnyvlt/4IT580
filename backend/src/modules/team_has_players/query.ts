@@ -1,4 +1,4 @@
-import { GQLError } from '../../utils/return_statements/errors';
+import { GQLError } from '../../utils/return_statements/errors.js';
 
 export const teamsHavePlayers = async (_: void, __: void, context: Context) => {
   const teamsHavePlayers = await context.prisma.team_has_players.findMany();

@@ -5,7 +5,7 @@ export const teams = async (_: void, __: void, context: Context) => {
   return teams.slice(0, 20);
 };
 
-type teamArgs = deleteTeamArgs;
+export type teamArgs = deleteTeamArgs;
 export const team = async (_: void, args: teamArgs, context: Context) => {
   return await context.prisma.team.findUnique({
     where: {

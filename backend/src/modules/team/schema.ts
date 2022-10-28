@@ -5,6 +5,9 @@ export const typeDef = gql`
     id_team: Int
     name: String
     image_url: String
+    players: [User!]!
+    invited_players: [User!]!
+    admins: [User!]!
   }
 
   extend type Query {

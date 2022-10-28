@@ -3,7 +3,6 @@ type UserArgs = {
 }
 export const user = async(_:void, args:UserArgs, context: Context) => {
     const prisma = context.prisma;
-    console.log(context.auth.getUserID());
     const result = await prisma.user.findFirst({
         where: {
             id_user: args.id_user

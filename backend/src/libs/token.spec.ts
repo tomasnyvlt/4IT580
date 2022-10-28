@@ -42,12 +42,12 @@ describe("JWT handler", () => {
     })
 
     test("Can create refresh token for user", () => {
-        const token = createRefreshToken(testTokenContent);
+        const token = createRefreshToken(testTokenContent.getUserID() || 0);
         expect(token).toBeDefined();
     })
 
     test("Verified data from refresh token are the same", async () => {
-        const token = createRefreshToken(testTokenContent);
+        const token = createRefreshToken(testTokenContent.getUserID() || 0);
         const verified = await verifyRefreshToken(token);
         expect(verified).toBe(testTokenContent.getUserID());
     })

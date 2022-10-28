@@ -65,8 +65,8 @@ export function stripTokenFromHeader(headerContent: string|undefined){
  * @param content 
  * @returns 
  */
-export function createRefreshToken(content: AppUser){
-  return jwt.sign({id_user: content.getUserID()}, REFRESH_SECRET);
+export function createRefreshToken(id_user:number){
+  return jwt.sign({id_user}, REFRESH_SECRET);
 }
 
 /**

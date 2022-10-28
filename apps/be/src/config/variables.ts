@@ -1,18 +1,10 @@
-import dotenv, { DotenvConfigOptions } from 'dotenv-flow';
-import path from 'path';
+import dotenv from 'dotenv-flow';
 
-const dir = path.join(__dirname, "../../")
-const dotenvConfig:DotenvConfigOptions = {
-    path: dir
-} 
-console.log(dir)
-
-dotenv.config(dotenvConfig);
-
+dotenv.config();
 
 export const MOCKS = process.env.MOCKS || "";
 export const PORT:Number = Number.parseInt(process.env.PORT || "5000");
-export const JWT_SECRET = process.env.JWT_SECRET || "";
+export const JWT_SECRET = process.env.JWT_SECRET || "test_secret";
 export const DB_HOST = process.env.DB_HOST || "";
 export const DB_PORT = process.env.DB_PORT || "";
 export const DB_USER = process.env.DB_USER || "";

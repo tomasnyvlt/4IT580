@@ -1,3 +1,5 @@
+import { GQLSuccess } from '../../utils/return_statements/success';
+
 type addPlayersToTeamsArgs = {
   players: Array<{
     id_user: number;
@@ -10,7 +12,7 @@ export const addPlayersToTeams = async (
   args: addPlayersToTeamsArgs,
   context: Context
 ) => {
-  await context.prisma.team_has_players.createMany({
+  const addPlayersToTeams = await context.prisma.team_has_players.createMany({
     data: args.players.map((player) => {
       return {
         id_user: player.id_user,
@@ -19,7 +21,7 @@ export const addPlayersToTeams = async (
       };
     }),
   });
-  return 'success';
+  return new GQLSuccess().rowsCreated(addPlayersToTeams.count);
 };
 
 type deletePlayerFromTeamArgs = {
@@ -39,7 +41,7 @@ export const deletePlayerFromTeam = async (
       },
     },
   });
-  return 'success';
+  return new GQLSuccess().rowDeleted();
 };
 
 type updatePlayerInTeamStateArgs = deletePlayerFromTeamArgs & {
@@ -50,7 +52,7 @@ export const updatePlayerInTeamState = async (
   args: updatePlayerInTeamStateArgs,
   context: Context
 ) => {
-  await context.prisma.team_has_players.update({
+  const updatePlayerInTeamState = await context.prisma.team_has_players.update({
     where: {
       id_user_id_team: {
         id_user: args.id_user,
@@ -61,5 +63,5 @@ export const updatePlayerInTeamState = async (
       state: args.new_state,
     },
   });
-  return 'success';
+  return updatePlayerInTeamState;
 };

@@ -1,3 +1,5 @@
+import { GQLSuccess } from '../../utils/return_statements/success';
+
 type addTeamArgs = {
   name: string;
   image_url: string;
@@ -19,7 +21,7 @@ export const deleteTeam = async (
       id_team: args.id_team,
     },
   });
-  return 'success';
+  return new GQLSuccess().rowDeleted();
 };
 
 type updateTeamArgs = deleteTeamArgs & addTeamArgs;
@@ -28,7 +30,7 @@ export const updateTeam = async (
   args: updateTeamArgs,
   context: Context
 ) => {
-  await context.prisma.team.update({
+  const updateTeam = await context.prisma.team.update({
     where: {
       id_team: args.id_team,
     },
@@ -37,5 +39,5 @@ export const updateTeam = async (
       image_url: args.image_url,
     },
   });
-  return 'success';
+  return updateTeam;
 };

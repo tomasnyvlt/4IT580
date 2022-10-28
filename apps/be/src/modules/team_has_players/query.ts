@@ -1,3 +1,5 @@
+import { GQLError } from '../../utils/return_statements/errors';
+
 export const teamsHavePlayers = async (_: void, __: void, context: Context) => {
   const teamsHavePlayers = await context.prisma.team_has_players.findMany();
   return teamsHavePlayers.slice(0, 20);
@@ -16,6 +18,9 @@ export const teamHasPlayers = async (
       id_team: args.id_team,
     },
   });
+  if (teamHasPlayers.length < 1) {
+    throw new GQLError().noMatches();
+  }
   return teamHasPlayers.slice(0, 20);
 };
 
@@ -32,5 +37,8 @@ export const playerInTeams = async (
       id_user: args.id_user,
     },
   });
+  if (playerInTeams.length < 1) {
+    throw new GQLError().noMatches();
+  }
   return playerInTeams.slice(0, 20);
 };

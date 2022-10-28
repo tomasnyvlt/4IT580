@@ -15,6 +15,6 @@ export const typeDef = gql`
   extend type Mutation {
     addTeam(name: String!, image_url: String): Team!
     deleteTeam(id_team: Int!): String!
-    updateTeam(id_team: Int!, name: String!, image_url: String): String!
+    updateTeam(id_team: Int!, name: String!, image_url: String): Team!
   }
 `;

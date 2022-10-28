@@ -32,6 +32,6 @@ export const typeDef = gql`
       id_user: Int!
       id_team: Int!
       new_state: team_has_players_state!
-    ): String!
+    ): Team_has_players!
   }
 `;

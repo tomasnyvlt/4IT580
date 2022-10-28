@@ -1,3 +1,5 @@
+import { GQLSuccess } from "../../utils/return_statements/success";
+
 type addTeamMetaDataArgs = {
   key: string;
   value?: string;
@@ -15,7 +17,7 @@ export const addTeamMetaData = async (
       id_team: args.id_team,
     },
   });
-  return 'success';
+  return new GQLSuccess().rowCreated();
 };
 
 type updateTeamMetaDataArgs = {
@@ -52,5 +54,5 @@ export const deleteTeamMetaData = async (
       id_team_meta_data: args.id_team_meta_data,
     },
   });
-  return 'success';
+  return new GQLSuccess().rowDeleted();
 };

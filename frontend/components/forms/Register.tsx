@@ -21,16 +21,20 @@ type RegisterInputs = {
 
 const RegisterForm: FC = () => {
   const signInFormSchema = object().shape({
-    email: string().email().required("Email je povinný"),
-    emailConfirmation: string().oneOf([ref("email"), null], "Email má být stejný"),
-    password: string().min(8, "Heslo má obsahovat minimalně 8 znáku").required("Heslo je povinné"),
-    passwordConfirmation: string().oneOf([ref("password"), null], "Heslo má být stejné"),
-    name: string().required("Jméno je povinné"),
-    surname: string().required("Přijmení je povinné"),
-    nickname: string(),
-    day: number().required(),
-    month: string().required(),
-    year: number().required()
+    email: string().email().required().label("E-mail"),
+    emailConfirmation: string()
+      .oneOf([ref("email"), null], "E-mail se neshoduje")
+      .label("Shoda e-mailu"),
+    password: string().min(8, "Heslo má obsahovat minimalně 8 znáku").required().label("Heslo"),
+    passwordConfirmation: string()
+      .oneOf([ref("password"), null], "Heslo má být stejné")
+      .label("Ověření hesla"),
+    name: string().required().label("Jméno"),
+    surname: string().required().label("Přijmení"),
+    nickname: string().required().label("Nickname"),
+    day: number().required().label("Den"),
+    month: string().required().label("Měsíc"),
+    year: number().required().label("Rok")
   });
   const methods = useForm<RegisterInputs>({
     resolver: yupResolver(signInFormSchema),
@@ -41,7 +45,10 @@ const RegisterForm: FC = () => {
       passwordConfirmation: "",
       name: "",
       surname: "",
-      nickname: ""
+      nickname: "",
+      day: undefined,
+      month: "",
+      year: undefined
     }
   });
 
@@ -49,7 +56,7 @@ const RegisterForm: FC = () => {
 
   const onSubmit = (data: RegisterInputs) => {
     // eslint-disable-next-line no-console
-    console.log({ data });
+    console.log(data);
     reset();
   };
 
@@ -72,32 +79,44 @@ const RegisterForm: FC = () => {
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3} mb="1rem">
-          <InputField name="email" type="email" label="Jaky je tvuj email?" placeholder="napis email" />
-          <InputField name="emailConfirmation" type="email" label="Podtvrdi email" placeholder="napis email znovu" />
-          <InputField name="password" label="Vymysli si heslo" placeholder="vytvor heslo" />
-          <InputField name="passwordConfirmation" label="Podtrdi heslo" placeholder="napis heslo znovu" />
+          <InputField name="email" type="email" label="Tvůj e-mail" placeholder="Napiš e-mail" required />
+          <InputField
+            name="emailConfirmation"
+            type="email"
+            label="Tvůj email znovu"
+            placeholder="Napiš e-mail znovu"
+            required
+          />
+          <InputField name="password" label="Tvoje heslo" type="password" placeholder="Napiš heslo" required />
+          <InputField
+            name="passwordConfirmation"
+            label="Tvoje heslo znovu"
+            type="password"
+            placeholder="Napiš heslo znovu"
+            required
+          />
           <Text fontSize="md" as="b">
-            Jak mame tobe rikat?
+            Jak ti máme říkat?
           </Text>
           <HStack spacing={3} justifyContent="space-between">
-            <InputField name="name" label="Tvoje jmeno" placeholder="zadej jmeno" />
-            <InputField name="surname" label="Tvoje primeni" placeholder="zadej prijmeni" />
-            <InputField name="nickname" label="Mas prezdivku?" placeholder="zadej prezdivku" />
+            <InputField name="name" label="Tvoje jméno" placeholder="Zadej jméno" required />
+            <InputField name="surname" label="Tvoje příjmení" placeholder="Zadej příjmení" required />
+            <InputField name="nickname" label="Tvoje přezdívka" placeholder="Zadej přezdívku" required />
           </HStack>
-          <Text fontSize="md" as="b">
-            Který den jseš se narodil?
+          <Text fontSize="md" as="b" mt="2rem">
+            Kdy jsi se narodil?
           </Text>
           <HStack spacing={3} justifyContent="space-between">
-            <InputField name="day" label="Den" placeholder="dd" />
-            <InputField name="month" placeholder="mesic" label="Mesic" Component={Select}>
+            <InputField name="day" label="Den" placeholder="dd" required />
+            <InputField name="month" placeholder="mesic" label="Měsíc" Component={Select} required>
               {months.map((month) => {
                 return <option key={month}>{month}</option>;
               })}
             </InputField>
-            <InputField name="year" label="Rok" placeholder="yyyy" />
+            <InputField name="year" label="Rok" placeholder="yyyy" required />
           </HStack>
         </Stack>
-        <Button type="submit">Zaregestrovat se</Button>
+        <Button type="submit">Zaregistrovat se</Button>
       </form>
     </FormProvider>
   );

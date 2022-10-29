@@ -13,8 +13,8 @@ type SignInInputs = {
 
 const SignInForm: FC = () => {
   const signInFormSchema = object().shape({
-    email: string().email().required("Email je povinny"),
-    password: string().required("Heslo je povinne")
+    email: string().email().required().label("E-mail"),
+    password: string().required().label("Heslo")
   });
   const methods = useForm<SignInInputs>({
     resolver: yupResolver(signInFormSchema),
@@ -27,7 +27,7 @@ const SignInForm: FC = () => {
   const { handleSubmit, reset } = methods;
 
   const onSubmit = (data: SignInInputs) => {
-    console.log({ data });
+    console.log(data);
     reset();
   };
 
@@ -36,13 +36,13 @@ const SignInForm: FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3} mb="1rem">
           <Box>
-            <InputField name="email" label="Email" type="email" placeholder="zadej email" />
+            <InputField name="email" label="E-mail" type="email" placeholder="Zadej email" />
           </Box>
           <Box>
-            <InputField name="password" label="Heslo" type="password" placeholder="zadej heslo" />
+            <InputField name="password" label="Heslo" type="password" placeholder="Zadej heslo" />
           </Box>
         </Stack>
-        <Button type="submit">Prihlasit se</Button>
+        <Button type="submit">Přihlásit se</Button>
       </form>
     </FormProvider>
   );

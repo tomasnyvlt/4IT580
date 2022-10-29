@@ -1,5 +1,7 @@
 import { Box } from "@chakra-ui/react";
-import { FC, PropsWithChildren } from "react";
+import { UserContext } from "components/contexts/UserContext";
+import { useRouter } from "next/router";
+import { FC, PropsWithChildren, useContext, useEffect } from "react";
 
 import Footer from "components/ui/Footer";
 import Header from "components/ui/Header";

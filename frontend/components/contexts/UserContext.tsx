@@ -1,10 +1,8 @@
-import { useMutation } from "@apollo/client";
-import { LOGIN_MUTATION } from "components/mutations/login";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { ReactNode, createContext, useEffect, useMemo, useState } from "react";
 
 import { LoginTokens } from "components/types/graphql";
-import { AUTH_TOKEN, REFRESH_TOKEN } from "config";
+import { AUTH_TOKEN } from "config";
 
 export interface UserProps {
   name: string;
@@ -38,7 +36,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       const expiration = jwtDecode<JwtPayload>(tokens.accessToken as string).exp;
 
       if (new Date() < new Date((expiration as number) * 1000)) {
-
+        // token vypršel
       }
     }
   }, [tokens]);

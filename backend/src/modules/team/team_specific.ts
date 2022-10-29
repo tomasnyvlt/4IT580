@@ -1,5 +1,4 @@
 import { formatPlayers } from '../../utils/format.js';
-import { GQLError } from '../../utils/return_statements/errors.js';
 import { teamArgs } from './query.js';
 
 export const teamPlayers = async (
@@ -16,7 +15,6 @@ export const teamPlayers = async (
       },
     },
   });
-  if (!players) return new GQLError().noMatches();
   return formatPlayers(players).slice(0, 20);
 };
 
@@ -35,7 +33,6 @@ export const teamInvitedPlayers = async (
       },
     },
   });
-  if (!invitedPlayers) return new GQLError().noMatches();
   return formatPlayers(invitedPlayers).slice(0, 20);
 };
 
@@ -54,6 +51,18 @@ export const teamAdmins = async (
       },
     },
   });
-  if (!invitedPlayers) return new GQLError().noMatches();
   return formatPlayers(invitedPlayers).slice(0, 20);
+};
+
+export const teamMetaData = async (
+  parent: teamArgs,
+  _: void,
+  context: Context
+) => {
+  const teamMetaData = await context.prisma.team_meta_data.findMany({
+    where: {
+      id_team: parent.id_team,
+    },
+  });
+  return teamMetaData.slice(0, 20);
 };

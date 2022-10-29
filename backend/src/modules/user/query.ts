@@ -1,4 +1,4 @@
-type UserArgs = {
+export type UserArgs = {
     id_user: number
 }
 export const user = async(_:void, args:UserArgs, context: Context) => {

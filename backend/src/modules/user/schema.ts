@@ -9,6 +9,7 @@ export const typeDef = /* GraphQL */ `
         email: String!
         timeRegistered: String!
         timeLastLogin: String!
+        teams: [Team!]!
     }
 
     extend type Query{

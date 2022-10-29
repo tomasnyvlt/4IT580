@@ -8,6 +8,7 @@ export const typeDef = gql`
     players: [User!]!
     invited_players: [User!]!
     admins: [User!]!
+    team_meta_data: [Team_meta_data!]!
   }
 
   extend type Query {

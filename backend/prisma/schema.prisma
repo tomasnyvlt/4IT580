@@ -1,0 +1,202 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model event {
+  id_event         Int        @default(autoincrement()) @db.UnsignedInt @unique
+  time_happened    DateTime?  @default(now()) @db.DateTime(0)
+  id_match         Int        @db.UnsignedInt
+  id_event_type    Int        @db.UnsignedInt
+  user_id_user     Int        @db.UnsignedInt
+  id_counter_event Int        @db.UnsignedInt
+  event            event      @relation("eventToevent", fields: [id_counter_event], references: [id_event], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_event1")
+  event_type       event_type @relation(fields: [id_event_type], references: [id_event_type], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_event_type1")
+  match            match      @relation(fields: [id_match], references: [id_match], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_match1")
+  user             user       @relation(fields: [user_id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_user1")
+  other_event      event[]    @relation("eventToevent")
+
+  @@id([id_event, id_counter_event])
+  @@index([id_counter_event], map: "fk_event_event1")
+  @@index([id_event_type], map: "fk_event_event_type1")
+  @@index([id_match], map: "fk_event_match1")
+  @@index([user_id_user], map: "fk_event_user1")
+}
+
+model event_type {
+  id_event_type Int     @id @default(autoincrement()) @db.UnsignedInt
+  name          String  @db.VarChar(45)
+  key           String  @db.VarChar(45)
+  event         event[]
+}
+
+model league {
+  id_league                Int                        @id @default(autoincrement()) @db.UnsignedInt
+  name                     String                     @db.VarChar(80)
+  description              String?                    @db.Text
+  image_url                String                     @db.VarChar(255)
+  league_has_administrator league_has_administrator[]
+  league_has_team          league_has_team[]
+  match                    match[]
+}
+
+model league_has_administrator {
+  id_user   Int    @db.UnsignedInt
+  id_league Int    @db.UnsignedInt
+  league    league @relation(fields: [id_league], references: [id_league], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_has_league_league1")
+  user      user   @relation(fields: [id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_has_league_user1")
+
+  @@id([id_user, id_league])
+  @@index([id_league], map: "fk_user_has_league_league1")
+}
+
+model league_has_team {
+  id_team     Int       @db.UnsignedInt
+  id_league   Int       @db.UnsignedInt
+  time_joined DateTime? @default(now()) @db.DateTime(0)
+  league      league    @relation(fields: [id_league], references: [id_league], onDelete: NoAction, onUpdate: NoAction, map: "fk_team_has_league_league1")
+  team        team      @relation(fields: [id_team], references: [id_team], onDelete: NoAction, onUpdate: NoAction, map: "fk_team_has_league_team1")
+
+  @@id([id_team, id_league])
+  @@index([id_league], map: "fk_team_has_league_league1")
+}
+
+model login {
+  id_login Int    @id @default(autoincrement()) @db.UnsignedInt
+  password String @db.VarChar(255)
+  id_user  Int    @db.UnsignedInt
+  user     user   @relation(fields: [id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_login_user")
+
+  @@index([id_user], map: "fk_login_user")
+}
+
+model lost_password {
+  id_lost_password Int      @id @default(autoincrement()) @db.UnsignedInt
+  recovery_token   String   @db.VarChar(255)
+  time_valid_until DateTime @db.DateTime(0)
+  id_user          Int      @db.UnsignedInt
+  user             user     @relation(fields: [id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_lost_password_user1")
+
+  @@index([id_user], map: "fk_lost_password_user1")
+}
+
+model match {
+  id_match       Int              @id @default(autoincrement()) @db.UnsignedInt
+  time_created   DateTime?        @default(now()) @db.DateTime(0)
+  time_start     DateTime         @db.DateTime(0)
+  state          match_state
+  edit_hash      String           @db.VarChar(255)
+  id_league      Int              @db.UnsignedInt
+  league         league           @relation(fields: [id_league], references: [id_league], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_league1")
+  event          event[]
+  match_editor   match_editor[]
+  match_has_team match_has_team[]
+
+  @@index([id_league], map: "fk_match_league1")
+}
+
+model match_editor {
+  id_match_editor Int    @default(autoincrement()) @db.UnsignedInt
+  first_name      String @db.VarChar(45)
+  last_name       String @db.VarChar(45)
+  user_id_user    Int?   @db.UnsignedInt
+  match_id_match  Int    @db.UnsignedInt
+  match           match  @relation(fields: [match_id_match], references: [id_match], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_editor_match1")
+  user            user?  @relation(fields: [user_id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_editor_user1")
+
+  @@id([id_match_editor, match_id_match])
+  @@index([match_id_match], map: "fk_match_editor_match1")
+  @@index([user_id_user], map: "fk_match_editor_user1")
+}
+
+model match_has_team {
+  id_team  Int                  @db.UnsignedInt
+  id_match Int                  @db.UnsignedInt
+  state    match_has_team_state
+  match    match                @relation(fields: [id_match], references: [id_match], onDelete: NoAction, onUpdate: NoAction, map: "fk_team_has_match_match1")
+  team     team                 @relation(fields: [id_team], references: [id_team], onDelete: NoAction, onUpdate: NoAction, map: "fk_team_has_match_team1")
+
+  @@id([id_team, id_match])
+  @@index([id_match], map: "fk_team_has_match_match1")
+}
+
+model refresh_token {
+  id_refresh_token Int      @id @default(autoincrement()) @db.UnsignedInt
+  token            String   @db.VarChar(255)
+  time_valid_until DateTime @db.DateTime(0)
+  user_id_user     Int      @db.UnsignedInt
+  user             user     @relation(fields: [user_id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_refresh_token_user1")
+
+  @@index([user_id_user], map: "fk_refresh_token_user1")
+}
+
+model team {
+  id_team          Int                @id @default(autoincrement()) @db.UnsignedInt
+  name             String             @db.VarChar(80)
+  image_url        String             @db.VarChar(255)
+  league_has_team  league_has_team[]
+  match_has_team   match_has_team[]
+  team_has_players team_has_players[]
+  team_meta_data   team_meta_data[]
+}
+
+model team_has_players {
+  id_user Int                    @db.UnsignedInt
+  id_team Int                    @db.UnsignedInt
+  state   team_has_players_state
+  team    team                   @relation(fields: [id_team], references: [id_team], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_has_team_team1")
+  user    user                   @relation(fields: [id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_has_team_user1")
+
+  @@id([id_user, id_team])
+  @@index([id_team], map: "fk_user_has_team_team1")
+}
+
+model team_meta_data {
+  id_team_meta_data Int     @id @default(autoincrement()) @db.UnsignedInt
+  key               String  @db.VarChar(45)
+  value             String? @db.VarChar(255)
+  id_team           Int     @db.UnsignedInt
+  team              team    @relation(fields: [id_team], references: [id_team], onDelete: NoAction, onUpdate: NoAction, map: "fk_team_meta_data_team1")
+
+  @@index([id_team], map: "fk_team_meta_data_team1")
+}
+
+model user {
+  id_user                  Int                        @id @default(autoincrement()) @db.UnsignedInt
+  first_name               String                     @db.VarChar(45)
+  last_name                String                     @db.VarChar(45)
+  user_name                String                     @db.VarChar(45)
+  email                    String                     @db.VarChar(120)
+  time_registered          DateTime?                  @default(now()) @db.DateTime(0)
+  time_last_login          DateTime?                  @default(now()) @db.DateTime(0)
+  event                    event[]
+  league_has_administrator league_has_administrator[]
+  login                    login[]
+  lost_password            lost_password[]
+  match_editor             match_editor[]
+  refresh_token            refresh_token[]
+  team_has_players         team_has_players[]
+}
+
+enum match_has_team_state {
+  invited
+  accepted
+  declined
+}
+
+enum team_has_players_state {
+  invited
+  joined
+  admin
+}
+
+enum match_state {
+  pending
+  accepted
+  running
+  done
+}

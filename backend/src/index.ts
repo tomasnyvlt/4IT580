@@ -1,0 +1,45 @@
+import express from 'express';
+import cors from 'cors';
+import { ApolloServer } from 'apollo-server-express';
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
+import { PrismaClient } from '@prisma/client'
+import { PORT } from './config/variables.js';
+import { schema } from './modules/executableSchema.js';
+import { verifyTokenFromHeader } from './libs/token.js';
+
+const main = async () => {
+  const app = express();
+
+  app.disable('x-powered-by');
+  app.use(cors());
+
+  const prisma = new PrismaClient()
+
+  const apolloServer = new ApolloServer({
+    schema,
+    context: async ({ req }) => {
+      const auth:AppUser = await verifyTokenFromHeader(req.headers.authorization);
+      const context:Context = {
+        prisma,
+        auth,
+      }
+
+      return context;
+    },
+    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+  });
+
+  await apolloServer.start();
+
+  apolloServer.applyMiddleware({ app, cors: false });
+
+  const port = PORT || 4000;
+
+  app.get('/', (_, res) => res.redirect('/graphql'));
+
+  app.listen(port, () => {
+    console.info(`Server started at http://localhost:${port}/graphql`);
+  });
+};
+
+main();

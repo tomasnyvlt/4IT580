@@ -1,9 +1,9 @@
 import { Button, Container } from "@chakra-ui/react";
-import Page from "components/layouts/Page";
 import { NextPage } from "next";
 
-const IndexPage: NextPage = (props) => {
+import Page from "components/layouts/Page";
 
+const IndexPage: NextPage = () => {
   return (
     <Page>
       <Container>

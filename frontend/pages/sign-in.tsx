@@ -1,7 +1,8 @@
-import { Container, Text, Link, Heading, Box } from "@chakra-ui/react";
+import { Box, Container, Heading, Link, Text } from "@chakra-ui/react";
+import { NextPage } from "next";
+
 import SignInForm from "components/forms/SignIn";
 import Landing from "components/layouts/Landing";
-import { NextPage } from "next";
 
 const SignInPage: NextPage = () => {
   return (

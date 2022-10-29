@@ -1,9 +1,11 @@
 import { ApolloProvider } from "@apollo/client";
 import { ChakraProvider } from "@chakra-ui/react";
-import apolloClient from "apollo/client";
 import { AppProps } from "next/app";
 import Head from "next/head";
 import { FC } from "react";
+
+// eslint-disable-next-line import/order
+import apolloClient from "apollo/client";
 
 import "public/static/global.css";
 import { theme } from "theme/theme";

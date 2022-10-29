@@ -1,10 +1,9 @@
 import { Button, Container } from "@chakra-ui/react";
-import Landing from "components/layouts/Landing";
-import Page from "components/layouts/Page";
 import { NextPage } from "next";
 
-const IndexPage: NextPage = (props) => {
+import Landing from "components/layouts/Landing";
 
+const IndexPage: NextPage = () => {
   return (
     <Landing>
       <Container>
@@ -16,7 +15,9 @@ const IndexPage: NextPage = (props) => {
 
 export default IndexPage;
 
-{/*
+// eslint-disable-next-line no-lone-blocks
+{
+  /*
 export async function getServerSideProps() {
   const { data } = await client.query({
     query: gql`
@@ -32,4 +33,5 @@ export async function getServerSideProps() {
     },
   };
 }
-*/}
+*/
+}

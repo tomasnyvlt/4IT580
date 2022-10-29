@@ -1,8 +1,9 @@
-import { Box, Button, FormLabel, HStack, Input, Stack, Text, Select, FormControl } from "@chakra-ui/react";
+import { Button, HStack, Select, Stack, Text } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { object, string, number, ref } from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { number, object, ref, string } from "yup";
+
 import InputField from "shared/hook-form/FormField";
 
 type RegisterInputs = {
@@ -44,13 +45,10 @@ const RegisterForm: FC = () => {
     }
   });
 
-  const {
-    handleSubmit,
-    formState: { errors },
-    reset
-  } = methods;
+  const { handleSubmit, reset } = methods;
 
   const onSubmit = (data: RegisterInputs) => {
+    // eslint-disable-next-line no-console
     console.log({ data });
     reset();
   };
@@ -73,7 +71,7 @@ const RegisterForm: FC = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={3} mb={"1rem"}>
+        <Stack spacing={3} mb="1rem">
           <InputField name="email" type="email" label="Jaky je tvuj email?" placeholder="napis email" />
           <InputField name="emailConfirmation" type="email" label="Podtvrdi email" placeholder="napis email znovu" />
           <InputField name="password" label="Vymysli si heslo" placeholder="vytvor heslo" />
@@ -93,7 +91,7 @@ const RegisterForm: FC = () => {
             <InputField name="day" label="Den" placeholder="dd" />
             <InputField name="month" placeholder="mesic" label="Mesic" Component={Select}>
               {months.map((month) => {
-                return <option>{month}</option>;
+                return <option key={month}>{month}</option>;
               })}
             </InputField>
             <InputField name="year" label="Rok" placeholder="yyyy" />

@@ -1,8 +1,9 @@
-import { Box, Button, FormLabel, Input, Stack, StackDivider, VStack } from "@chakra-ui/react";
+import { Box, Button, Stack } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { object, string } from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+
 import InputField from "shared/hook-form/FormField";
 
 type SignInInputs = {
@@ -33,7 +34,7 @@ const SignInForm: FC = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={3} mb={"1rem"}>
+        <Stack spacing={3} mb="1rem">
           <Box>
             <InputField name="email" label="Email" type="email" placeholder="zadej email" />
           </Box>

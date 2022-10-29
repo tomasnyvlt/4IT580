@@ -1,4 +1,4 @@
-import { Box, Button, Stack } from "@chakra-ui/react";
+import { Box, Button, Stack, useToast } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
 import { FC, useContext } from "react";
@@ -25,6 +25,7 @@ const signInFormSchema = object().shape({
 const SignInForm: FC = () => {
   const router = useRouter();
   const userContext = useContext(UserContext);
+  const toast = useToast();
 
   const methods = useForm<SignInInputs>({
     resolver: yupResolver(signInFormSchema),
@@ -40,7 +41,14 @@ const SignInForm: FC = () => {
       localStorage.setItem(REFRESH_TOKEN, data.login.refreshToken);
       userContext?.setTokens!(data.login);
       router.push("/app");
-    }
+    },
+    onError: (error) =>
+      toast({
+        title: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true
+      })
   });
 
   const { handleSubmit, reset } = methods;

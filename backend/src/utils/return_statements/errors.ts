@@ -36,4 +36,16 @@ export class GQLError {
   noMatches() {
     return this.error('No matches were found!', 'NO_MATCHES');
   }
+  expired(){
+    return this.error('Access token has expired!', 'EXPIRED');
+  }
+  emailExists(){
+    return this.error('User with this email already exists.', 'USER_EMAIL_EXISTS');
+  }
+  usernameExists(){
+    return this.error('User with this user name already exists.', 'USER_NAME_EXISTS');
+  }
+  invalidEmail(){
+    return this.error('Email is not in valid form.', 'INVALID_EMAIL');
+  }
 }

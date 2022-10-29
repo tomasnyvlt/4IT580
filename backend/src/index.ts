@@ -18,8 +18,7 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema,
     context: async ({ req }) => {
-      const auth:TokenContent = verifyTokenFromHeader(req.headers.Authorization);
-
+      const auth:AppUser = await verifyTokenFromHeader(req.headers.authorization);
       const context:Context = {
         prisma,
         auth,

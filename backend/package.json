@@ -5,7 +5,7 @@
   "main": "build/main.js",
   "license": "MIT",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/index.js\"",
     "start": "node ./dist/src/index.js",

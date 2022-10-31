@@ -7,6 +7,15 @@ module.exports = {
     config.module.rules.push(svgLoaderRule(defaultLoaders, dir));
 
     return config;
+  },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/sign-in",
+        permanent: true
+      }
+    ];
   }
 };
 

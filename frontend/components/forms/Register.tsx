@@ -19,7 +19,6 @@ type RegisterInputs = {
   passwordConfirmation: string;
   firstName: string;
   lastName: string;
-  userName: string;
 };
 
 const signInFormSchema = object().shape({
@@ -40,8 +39,7 @@ const signInFormSchema = object().shape({
     .oneOf([ref("password"), null], "Heslo má být stejné")
     .label("Ověření hesla"),
   firstName: string().required().label("Jméno"),
-  lastName: string().required().label("Přijmení"),
-  userName: string().required().label("Nickname")
+  lastName: string().required().label("Přijmení")
 });
 
 const RegisterForm: FC = () => {
@@ -57,8 +55,7 @@ const RegisterForm: FC = () => {
       password: "",
       passwordConfirmation: "",
       firstName: "",
-      lastName: "",
-      userName: ""
+      lastName: ""
     }
   });
 
@@ -67,7 +64,7 @@ const RegisterForm: FC = () => {
       localStorage.setItem(AUTH_TOKEN, data.registerLogin.accessToken);
       localStorage.setItem(REFRESH_TOKEN, data.registerLogin.refreshToken);
       userContext?.setTokens!(data.registerLogin);
-      router.push("/app");
+      router.push("/");
     },
     onError: (error) =>
       toast({
@@ -85,7 +82,7 @@ const RegisterForm: FC = () => {
       variables: {
         firstName: data.firstName,
         lastName: data.lastName,
-        userName: data.userName,
+        userName: data.email,
         email: data.email,
         password: data.password
       }
@@ -119,7 +116,6 @@ const RegisterForm: FC = () => {
           <HStack spacing={3} justifyContent="space-between">
             <InputField name="firstName" label="Tvoje jméno" placeholder="Zadej jméno" required />
             <InputField name="lastName" label="Tvoje příjmení" placeholder="Zadej příjmení" required />
-            <InputField name="userName" label="Tvoje přezdívka" placeholder="Zadej přezdívku" required />
           </HStack>
         </Stack>
         <Button type="submit">Zaregistrovat se</Button>

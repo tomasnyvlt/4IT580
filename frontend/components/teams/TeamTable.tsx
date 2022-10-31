@@ -1,5 +1,4 @@
-import { Button, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, Link } from "@chakra-ui/react";
-
+import { Button, Link, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react";
 import { FC } from "react";
 
 const TeamTable: FC = () => {

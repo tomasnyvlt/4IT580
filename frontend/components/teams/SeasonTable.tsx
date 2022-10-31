@@ -1,5 +1,4 @@
-import { Button, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, Link } from "@chakra-ui/react";
-
+import { Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { FC } from "react";
 
 const SeasonTable: FC = () => {

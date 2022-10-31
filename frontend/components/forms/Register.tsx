@@ -1,16 +1,16 @@
 import { Button, HStack, Stack, Text, useToast } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/router";
 import { FC, useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { object, ref, string } from "yup";
-import { UserContext } from "components/contexts/UserContext";
 
+import { UserContext } from "components/contexts/UserContext";
 import { useMutation } from "components/hooks/useMutation";
 import { REGISTER_MUTATION } from "components/mutations/register";
 import { LoginTokens } from "components/types/graphql";
 import { AUTH_TOKEN, REFRESH_TOKEN } from "config";
 import InputField from "shared/hook-form/FormField";
-import { useRouter } from "next/router";
 
 type RegisterInputs = {
   email: string;

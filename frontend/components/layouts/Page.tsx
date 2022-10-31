@@ -4,6 +4,7 @@ import { FC, PropsWithChildren, useContext, useEffect } from "react";
 
 import { UserContext } from "components/contexts/UserContext";
 import Footer from "components/ui/Footer";
+import Sidebar from "components/ui/Sidebar";
 
 const Page: FC<PropsWithChildren> = ({ children }) => {
   const router = useRouter();
@@ -25,7 +26,7 @@ const Page: FC<PropsWithChildren> = ({ children }) => {
     return (
       <Box display="flex" flexDirection="row" minHeight="100vh">
         <Box w="300px" flex="0 0 auto" borderRight="1px solid" borderColor="gray.400">
-          sidebar
+          <Sidebar />
         </Box>
 
         <Box display="flex" flexDirection="column" w="100%">

@@ -12,10 +12,20 @@ type InputFieldType = {
   placeholder?: string;
   type?: string;
   children?: ReactNode;
+  required?: boolean;
   Component?: ComponentType<ComponentFieldType>;
 };
 
-const InputField: FC<InputFieldType> = ({ name, label, placeholder, type, children, Component = Input, ...props }) => {
+const InputField: FC<InputFieldType> = ({
+  name,
+  label,
+  placeholder,
+  type,
+  children,
+  Component = Input,
+  required,
+  ...props
+}) => {
   const controller = useController({
     name
   });
@@ -23,11 +33,14 @@ const InputField: FC<InputFieldType> = ({ name, label, placeholder, type, childr
 
   return (
     <FormControl isInvalid={!!error}>
-      <FormLabel>{label}</FormLabel>
+      <FormLabel>
+        {label}
+        {required && " *"}
+      </FormLabel>
       <Component placeholder={placeholder} {...controller.field} {...props}>
         {children}
       </Component>
-      <FormErrorMessage>{error}</FormErrorMessage>
+      {error && <FormErrorMessage>{error}</FormErrorMessage> }
     </FormControl>
   );
 };

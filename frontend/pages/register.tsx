@@ -9,7 +9,7 @@ const RegisterPage: NextPage = () => {
     <Landing>
       <Container maxW="700px">
         <Heading as="h2" textAlign="center" mt="3rem" size="md">
-          Registrace pomoci emailove adresy
+          Registrace
         </Heading>
         <Box mx="auto" mt="2rem">
           <RegisterForm />

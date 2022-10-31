@@ -19,8 +19,7 @@ type InputFieldType = {
 const InputField: FC<InputFieldType> = ({
   name,
   label,
-  placeholder,
-  type,
+
   children,
   Component = Input,
   required,
@@ -37,10 +36,10 @@ const InputField: FC<InputFieldType> = ({
         {label}
         {required && " *"}
       </FormLabel>
-      <Component placeholder={placeholder} {...controller.field} {...props}>
+      <Component {...controller.field} {...props}>
         {children}
       </Component>
-      {error && <FormErrorMessage>{error}</FormErrorMessage> }
+      {error && <FormErrorMessage>{error}</FormErrorMessage>}
     </FormControl>
   );
 };

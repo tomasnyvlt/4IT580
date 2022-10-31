@@ -2,7 +2,7 @@ import { Button, HStack, Select, Stack, Text, useToast } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FC, useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { number, object, ref, string } from "yup";
+import { object, ref, string } from "yup";
 import { UserContext } from "components/contexts/UserContext";
 
 import { useMutation } from "components/hooks/useMutation";
@@ -20,9 +20,6 @@ type RegisterInputs = {
   firstName: string;
   lastName: string;
   userName: string;
-  // day: number;
-  // month: string;
-  // year: number;
 };
 
 const signInFormSchema = object().shape({
@@ -45,9 +42,6 @@ const signInFormSchema = object().shape({
   firstName: string().required().label("Jméno"),
   lastName: string().required().label("Přijmení"),
   userName: string().required().label("Nickname")
-  // day: number().required().label("Den"),
-  // month: string().required().label("Měsíc"),
-  // year: number().required().label("Rok")
 });
 
 const RegisterForm: FC = () => {
@@ -65,9 +59,6 @@ const RegisterForm: FC = () => {
       firstName: "",
       lastName: "",
       userName: ""
-      // day: undefined,
-      // month: "",
-      // year: undefined
     }
   });
 
@@ -102,21 +93,6 @@ const RegisterForm: FC = () => {
     reset();
   };
 
-  const months = [
-    "Leden",
-    "Únor",
-    "Březen",
-    "Duben",
-    "Květen",
-    "Červen",
-    "Červenec",
-    "Srpen",
-    "Září",
-    "Říjen",
-    "Listopad",
-    "Prosinec"
-  ];
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -145,18 +121,6 @@ const RegisterForm: FC = () => {
             <InputField name="lastName" label="Tvoje příjmení" placeholder="Zadej příjmení" required />
             <InputField name="userName" label="Tvoje přezdívka" placeholder="Zadej přezdívku" required />
           </HStack>
-          {/* <Text fontSize="md" as="b" mt="2rem">
-            Kdy jsi se narodil?
-          </Text>
-          <HStack spacing={3} justifyContent="space-between">
-            <InputField name="day" label="Den" placeholder="dd" required />
-            <InputField name="month" placeholder="mesic" label="Měsíc" Component={Select} required>
-              {months.map((month) => {
-                return <option key={month}>{month}</option>;
-              })}
-            </InputField>
-            <InputField name="year" label="Rok" placeholder="yyyy" required />
-          </HStack> */}
         </Stack>
         <Button type="submit">Zaregistrovat se</Button>
       </form>

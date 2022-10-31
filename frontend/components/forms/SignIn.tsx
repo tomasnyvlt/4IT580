@@ -1,33 +1,65 @@
-import { Box, Button, Stack } from "@chakra-ui/react";
+import { Box, Button, Stack, useToast } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FC } from "react";
+import { useRouter } from "next/router";
+import { FC, useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { object, string } from "yup";
 
+import { UserContext } from "components/contexts/UserContext";
+import { useMutation } from "components/hooks/useMutation";
+import { LOGIN_MUTATION } from "components/mutations/login";
+import { LoginTokens } from "components/types/graphql";
+import { AUTH_TOKEN, REFRESH_TOKEN } from "config";
 import InputField from "shared/hook-form/FormField";
 
 type SignInInputs = {
-  email: string;
+  nickname: string;
   password: string;
 };
 
+const signInFormSchema = object().shape({
+  nickname: string().required().label("Nickname"),
+  password: string().required().label("Heslo")
+});
+
 const SignInForm: FC = () => {
-  const signInFormSchema = object().shape({
-    email: string().email().required().label("E-mail"),
-    password: string().required().label("Heslo")
-  });
+  const router = useRouter();
+  const userContext = useContext(UserContext);
+  const toast = useToast();
+
   const methods = useForm<SignInInputs>({
     resolver: yupResolver(signInFormSchema),
     defaultValues: {
-      email: "",
-      password: ""
+      nickname: "tom_dre",
+      password: "123123"
     }
+  });
+
+  const [login] = useMutation(LOGIN_MUTATION, {
+    onCompleted: (data: { login: LoginTokens }) => {
+      localStorage.setItem(AUTH_TOKEN, data.login.accessToken);
+      localStorage.setItem(REFRESH_TOKEN, data.login.refreshToken);
+      userContext?.setTokens!(data.login);
+      router.push("/app");
+    },
+    onError: (error) =>
+      toast({
+        title: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true
+      })
   });
 
   const { handleSubmit, reset } = methods;
 
   const onSubmit = (data: SignInInputs) => {
-    console.log(data);
+    login({
+      variables: {
+        userName: data.nickname,
+        password: data.password
+      }
+    });
     reset();
   };
 
@@ -36,7 +68,7 @@ const SignInForm: FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3} mb="1rem">
           <Box>
-            <InputField name="email" label="E-mail" type="email" placeholder="Zadej email" />
+            <InputField name="nickname" label="Nickname" placeholder="Zadej nickname" />
           </Box>
           <Box>
             <InputField name="password" label="Heslo" type="password" placeholder="Zadej heslo" />

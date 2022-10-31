@@ -29,7 +29,11 @@ export function verifyToken(token:string) {
     return user; 
   }
   catch(err:any){
-    if(err.name == "TokenExpiredError") return createErrorThrowingUser(new GQLError().expired());
+    if(err.name == "TokenExpiredError"){
+      
+      const content = jwt.decode(token);
+      return createErrorThrowingUser(new GQLError().expired(content));
+    }
     else return createErrorThrowingUser(new GQLError().notAuthenticated());
   }
 }

@@ -71,7 +71,13 @@ type RefreshArgs = {
 }
 export const refresh = async(_:void, args: RefreshArgs, context: Context) => {
     const userId = await verifyRefreshToken(args.refreshToken);
-    if(userId !== context.auth.getUserID()) throw new GQLError().notAuthorized();
+    let requestUserId;
+    try{
+        requestUserId = context.auth.getUserID();
+    } catch(err:any) {
+        requestUserId = err.extensions?.data?.id_user;
+    }
+    if(userId !== requestUserId) throw new GQLError().notAuthorized();
     const tokenDb = await context.prisma.refresh_token.findFirst({
         where: {
             user_id_user: userId,

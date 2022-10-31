@@ -7,7 +7,8 @@
     "buildDev": "NEXT_PUBLIC_ENV=development next build",
     "buildTest": "NEXT_PUBLIC_ENV=test next build",
     "startDev": "NEXT_PUBLIC_ENV=development next start",
-    "startTest": "NEXT_PUBLIC_ENV=test next start"
+    "startTest": "NEXT_PUBLIC_ENV=test next start",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.7.0",
@@ -16,8 +17,11 @@
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@hookform/resolvers": "^2.9.10",
+    "apollo": "^2.34.0",
+    "auth-token": "^0.1.0",
     "framer-motion": "^7.6.1",
     "graphql": "^16.6.0",
+    "jwt-decode": "^3.1.2",
     "next": "^12.1.6",
     "react": "^18.1.0",
     "react-datepicker": "^4.8.0",
@@ -26,6 +30,13 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@graphql-codegen/add": "^3.2.1",
+    "@graphql-codegen/cli": "2.13.8",
+    "@graphql-codegen/client-preset": "^1.1.1",
+    "@graphql-codegen/introspection": "2.2.1",
+    "@graphql-codegen/typescript": "^2.8.0",
+    "@graphql-codegen/typescript-operations": "^2.5.5",
+    "@types/graphql": "^14.5.0",
     "@types/node": "^17.0.31",
     "@types/react": "^18.0.9",
     "@types/react-select": "^5.0.1",

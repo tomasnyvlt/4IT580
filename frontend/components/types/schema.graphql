@@ -1,0 +1,104 @@
+type Query {
+  test: String
+  user(id_user: Int!): User!
+  eventTypes: [EventType!]!
+  teams: [Team!]!
+  team(id_team: Int!): Team!
+  teamsHavePlayers: [Team_has_players!]!
+  teamHasPlayers(id_team: Int): [Team_has_players!]!
+  playerInTeams(id_user: Int): [Team_has_players!]!
+  teamsMetaData: [Team_meta_data!]!
+  teamMetaData(id_team: Int!): [Team_meta_data!]!
+}
+
+type Mutation {
+  _empty(nothing: String): String
+  registerLogin(
+    firstName: String!
+    lastName: String!
+    userName: String!
+    email: String!
+    password: String!
+  ): LoginTokens!
+  addEventType(key: String!, name: String!): EventType!
+  deleteEventType(id_event_type: Int!): String!
+  updateEventType(id_event_type: Int!, name: String, key: String): EventType!
+  login(userName: String!, password: String!): LoginTokens!
+  logout(userId: Int!): String!
+  refresh(refreshToken: String!): String!
+  addTeam(name: String!, image_url: String): Team!
+  deleteTeam(id_team: Int!): String!
+  updateTeam(id_team: Int!, name: String!, image_url: String): Team!
+  addPlayersToTeams(players: [AddPlayersInput!]!): String!
+  deletePlayerFromTeam(id_user: Int!, id_team: Int!): String!
+  updatePlayerInTeamState(
+    id_user: Int!
+    id_team: Int!
+    new_state: team_has_players_state!
+  ): Team_has_players!
+  addTeamMetaData(key: String!, value: String, id_team: Int!): String!
+  updateTeamMetaData(
+    id_team_meta_data: Int!
+    key: String
+    value: String
+    id_team: Int
+  ): Team_meta_data!
+  deleteTeamMetaData(id_team_meta_data: Int!): String!
+}
+
+type User {
+  id: Int!
+  firstName: String!
+  lastName: String!
+  userName: String!
+  email: String!
+  timeRegistered: String!
+  timeLastLogin: String!
+  teams: [Team!]!
+}
+
+type EventType {
+  id_event_type: Int!
+  name: String!
+  key: String!
+}
+
+type LoginTokens {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Team {
+  id_team: Int
+  name: String
+  image_url: String
+  players: [User!]!
+  invited_players: [User!]!
+  admins: [User!]!
+  team_meta_data: [Team_meta_data!]!
+}
+
+enum team_has_players_state {
+  invited
+  joined
+  admin
+}
+
+type Team_has_players {
+  id_user: Int!
+  id_team: Int!
+  state: team_has_players_state!
+}
+
+input AddPlayersInput {
+  id_user: Int!
+  id_team: Int!
+  state: team_has_players_state!
+}
+
+type Team_meta_data {
+  id_team_meta_data: Int!
+  key: String!
+  value: String
+  id_team: Int!
+}

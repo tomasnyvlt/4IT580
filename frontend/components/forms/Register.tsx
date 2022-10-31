@@ -1,41 +1,60 @@
-import { Button, HStack, Select, Stack, Text } from "@chakra-ui/react";
+import { Button, HStack, Select, Stack, Text, useToast } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { number, object, ref, string } from "yup";
+import { UserContext } from "components/contexts/UserContext";
 
+import { useMutation } from "components/hooks/useMutation";
+import { REGISTER_MUTATION } from "components/mutations/register";
+import { LoginTokens } from "components/types/graphql";
+import { AUTH_TOKEN, REFRESH_TOKEN } from "config";
 import InputField from "shared/hook-form/FormField";
+import { useRouter } from "next/router";
 
 type RegisterInputs = {
   email: string;
   emailConfirmation: string;
   password: string;
   passwordConfirmation: string;
-  name: string;
-  surname: string;
-  nickname?: string;
-  day: number;
-  month: string;
-  year: number;
+  firstName: string;
+  lastName: string;
+  userName: string;
+  // day: number;
+  // month: string;
+  // year: number;
 };
 
+const signInFormSchema = object().shape({
+  email: string().email().required().label("E-mail"),
+  emailConfirmation: string()
+    .oneOf([ref("email"), null], "E-mail se neshoduje")
+    .label("Shoda e-mailu"),
+  password: string()
+    .min(8, "Heslo má obsahovat minimalně 8 znáku")
+    .required()
+    .label("Heslo")
+    .matches(/\w*[a-z]\w*/, "Heslo má obsahovat velké písmeno")
+    .matches(/\w*[A-Z]\w*/, "Heslo má obsahovat malé písmeno")
+    .matches(/\d/, "Heslo má obsahovat číslo")
+    .required()
+    .label("Heslo"),
+  passwordConfirmation: string()
+    .oneOf([ref("password"), null], "Heslo má být stejné")
+    .label("Ověření hesla"),
+  firstName: string().required().label("Jméno"),
+  lastName: string().required().label("Přijmení"),
+  userName: string().required().label("Nickname")
+  // day: number().required().label("Den"),
+  // month: string().required().label("Měsíc"),
+  // year: number().required().label("Rok")
+});
+
 const RegisterForm: FC = () => {
-  const signInFormSchema = object().shape({
-    email: string().email().required().label("E-mail"),
-    emailConfirmation: string()
-      .oneOf([ref("email"), null], "E-mail se neshoduje")
-      .label("Shoda e-mailu"),
-    password: string().min(8, "Heslo má obsahovat minimalně 8 znáku").required().label("Heslo"),
-    passwordConfirmation: string()
-      .oneOf([ref("password"), null], "Heslo má být stejné")
-      .label("Ověření hesla"),
-    name: string().required().label("Jméno"),
-    surname: string().required().label("Přijmení"),
-    nickname: string().required().label("Nickname"),
-    day: number().required().label("Den"),
-    month: string().required().label("Měsíc"),
-    year: number().required().label("Rok")
-  });
+  const router = useRouter();
+  const userContext = useContext(UserContext);
+  const toast = useToast();
+
   const methods = useForm<RegisterInputs>({
     resolver: yupResolver(signInFormSchema),
     defaultValues: {
@@ -43,20 +62,43 @@ const RegisterForm: FC = () => {
       emailConfirmation: "",
       password: "",
       passwordConfirmation: "",
-      name: "",
-      surname: "",
-      nickname: "",
-      day: undefined,
-      month: "",
-      year: undefined
+      firstName: "",
+      lastName: "",
+      userName: ""
+      // day: undefined,
+      // month: "",
+      // year: undefined
     }
+  });
+
+  const [registerLogin] = useMutation(REGISTER_MUTATION, {
+    onCompleted: (data: { registerLogin: LoginTokens }) => {
+      localStorage.setItem(AUTH_TOKEN, data.registerLogin.accessToken);
+      localStorage.setItem(REFRESH_TOKEN, data.registerLogin.refreshToken);
+      userContext?.setTokens!(data.registerLogin);
+      router.push("/app");
+    },
+    onError: (error) =>
+      toast({
+        title: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true
+      })
   });
 
   const { handleSubmit, reset } = methods;
 
   const onSubmit = (data: RegisterInputs) => {
-    // eslint-disable-next-line no-console
-    console.log(data);
+    registerLogin({
+      variables: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        userName: data.userName,
+        email: data.email,
+        password: data.password
+      }
+    });
     reset();
   };
 
@@ -99,11 +141,11 @@ const RegisterForm: FC = () => {
             Jak ti máme říkat?
           </Text>
           <HStack spacing={3} justifyContent="space-between">
-            <InputField name="name" label="Tvoje jméno" placeholder="Zadej jméno" required />
-            <InputField name="surname" label="Tvoje příjmení" placeholder="Zadej příjmení" required />
-            <InputField name="nickname" label="Tvoje přezdívka" placeholder="Zadej přezdívku" required />
+            <InputField name="firstName" label="Tvoje jméno" placeholder="Zadej jméno" required />
+            <InputField name="lastName" label="Tvoje příjmení" placeholder="Zadej příjmení" required />
+            <InputField name="userName" label="Tvoje přezdívka" placeholder="Zadej přezdívku" required />
           </HStack>
-          <Text fontSize="md" as="b" mt="2rem">
+          {/* <Text fontSize="md" as="b" mt="2rem">
             Kdy jsi se narodil?
           </Text>
           <HStack spacing={3} justifyContent="space-between">
@@ -114,7 +156,7 @@ const RegisterForm: FC = () => {
               })}
             </InputField>
             <InputField name="year" label="Rok" placeholder="yyyy" required />
-          </HStack>
+          </HStack> */}
         </Stack>
         <Button type="submit">Zaregistrovat se</Button>
       </form>

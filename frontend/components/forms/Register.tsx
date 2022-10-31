@@ -1,4 +1,4 @@
-import { Button, HStack, Select, Stack, Text, useToast } from "@chakra-ui/react";
+import { Button, HStack, Stack, Text, useToast } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FC, useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -65,6 +65,14 @@ const RegisterForm: FC = () => {
       localStorage.setItem(REFRESH_TOKEN, data.registerLogin.refreshToken);
       userContext?.setTokens!(data.registerLogin);
       router.push("/");
+      toast({
+        title: "Na váše email jsme poslali potvrzení registrace.",
+        description:
+          "Pro přihlášení do aplikace je potřeba již poslední krok, kterým je potvrzení správnosti vašeho emailového účtu tím, že kliknete na odkaz ve vašem emailu.",
+        status: "success",
+        duration: 9000,
+        isClosable: true
+      });
     },
     onError: (error) =>
       toast({

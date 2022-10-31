@@ -9,11 +9,12 @@ export class GQLError {
     this.code = code;
   }
 
-  error(message: string, code: string, argumentName?: string): GraphQLError {
+  error(message: string, code: string, argumentName?: string, data?: any): GraphQLError {
     return new GraphQLError(message, {
       extensions: {
         code: code,
         argumentName: argumentName,
+        data: data
       },
     });
   }
@@ -36,8 +37,8 @@ export class GQLError {
   noMatches() {
     return this.error('No matches were found!', 'NO_MATCHES');
   }
-  expired(){
-    return this.error('Access token has expired!', 'EXPIRED');
+  expired(data?: any){
+    return this.error('Access token has expired!', 'EXPIRED', undefined, data);
   }
   emailExists(){
     return this.error('User with this email already exists.', 'USER_EMAIL_EXISTS');

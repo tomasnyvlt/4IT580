@@ -25,9 +25,7 @@ const Page: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <Box display="flex" flexDirection="row" minHeight="100vh">
-      <Box w="250px" flex="0 0 auto" height="100%">
-        <Sidebar />
-      </Box>
+      <Sidebar />
 
       <Box display="flex" flexDirection="column" w="100%">
         <Box position="relative" flex="1">

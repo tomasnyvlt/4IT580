@@ -8,6 +8,8 @@ import { typeDef as User, resolvers as userResolvers } from './user/index.js';
 import { typeDef as Token, resolvers as tokenResolvers } from './token/index.js';
 import { typeDef as League, resolvers as leagueResolvers } from './league/index.js'
 
+import { sendMail, createRegistrationEmailContent } from "../libs/email.js";
+
 // based on - https://www.apollographql.com/blog/backend/schema-design/modularizing-your-graphql-schema-code/
 const Query = /* GraphQL */ `
   type Query {

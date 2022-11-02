@@ -7,7 +7,7 @@ export const typeDef = /* GraphQL */ `
     }
 
     extend type Mutation{
-        login(userName: String!, password: String!): LoginTokens!
+        login(email: String!, password: String!): LoginTokens!
         logout(userId: Int!): String!
         refresh(refreshToken: String!): String!
     }

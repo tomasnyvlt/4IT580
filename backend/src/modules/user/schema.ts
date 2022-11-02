@@ -5,7 +5,6 @@ export const typeDef = /* GraphQL */ `
         id: Int!
         firstName: String!
         lastName: String!
-        userName: String!
         email: String!
         timeRegistered: String!
         timeLastLogin: String!
@@ -17,6 +16,6 @@ export const typeDef = /* GraphQL */ `
     }
 
     extend type Mutation{
-        registerLogin(firstName: String!, lastName: String!, userName: String!, email: String!, password: String!): LoginTokens!
+        registerLogin(firstName: String!, lastName: String!, email: String!, password: String!): LoginTokens!
     }
 `;

@@ -1,19 +1,41 @@
 import { hashPassword } from "../../libs/password.js";
 import { createRefreshToken, createToken } from "../../libs/token.js";
 import { GQLError } from "../../utils/return_statements/errors.js";
+import yup from "yup";
+import { registerLoginValidation } from "./validation.js";
 
 type RegisterLoginArgs = {
     firstName: string,
     lastName: string,
-    userName: string,
     email: string,
     password: string
 }
 export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Context) => {
-    const hashedPassword = await hashPassword(args.password)
-    const prisma = context.prisma;
+    try{
+        await registerLoginValidation.validate(args);
+    } catch(err:any) {
+        switch(err.path){
+            case "password": {
+                if(err.type == "min") throw new GQLError().wrongPasswordLength();
+                throw new GQLError().invalidPasswordContent();
+            }
+            case "email": {
+                throw new GQLError().invalidEmail();
+            }
+            case "firstName": {
+                throw new GQLError().invalidArgument("firstName");
+            }
+            case "lastName": {
+                throw new GQLError().invalidArgument("lastName");
+            }
+            default: {
+                throw new GQLError().error(err.message, "ERR");
+            }
+        }
+        
+    }
 
-    if(!emailPatern.test(args.email)) throw new GQLError().invalidEmail();
+    const prisma = context.prisma;
 
     const userEmail = await prisma.user.findFirst({
         where: {
@@ -22,18 +44,13 @@ export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Con
     });
     if(userEmail) throw new GQLError().emailExists();
 
-    const userUsername = await prisma.user.findFirst({
-        where: {
-            user_name: args.userName
-        }
-    }); 
-    if(userUsername) throw new GQLError().usernameExists();
+    const hashedPassword = await hashPassword(args.password)
+
 
     const user = await prisma.user.create({
         data: {
             first_name: args.firstName,
             last_name: args.lastName,
-            user_name: args.userName,
             email: args.email
         }
     });
@@ -43,6 +60,7 @@ export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Con
             password: hashedPassword
         }
     });
+
     const accessToken = createToken(user.id_user)
     const refreshToken = createRefreshToken(user.id_user);
     

@@ -169,7 +169,6 @@ model user {
   id_user                  Int                        @id @default(autoincrement()) @db.UnsignedInt
   first_name               String                     @db.VarChar(45)
   last_name                String                     @db.VarChar(45)
-  user_name                String                     @db.VarChar(45)
   email                    String                     @db.VarChar(120)
   time_registered          DateTime?                  @default(now()) @db.DateTime(0)
   time_last_login          DateTime?                  @default(now()) @db.DateTime(0)
@@ -180,6 +179,16 @@ model user {
   match_editor             match_editor[]
   refresh_token            refresh_token[]
   team_has_players         team_has_players[]
+  registration_tokens      registration_token[] 
+}
+
+model registration_token {
+  token                   String                      @id @unique
+  valid_until             DateTime                    @db.DateTime(0)
+  id_user                 Int                         @db.UnsignedInt
+  user                    user                        @relation(fields: [id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_regtoken_user")
+
+  @@index([id_user], map: "fk_regtoken_user")
 }
 
 enum match_has_team_state {

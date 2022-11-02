@@ -5,7 +5,7 @@ import Head from "next/head";
 import { FC } from "react";
 import { setLocale } from "yup";
 
-import apolloClient from "apollo/client";
+import { EnhancedApolloProvider } from "apollo/client";
 import { AuthProvider } from "components/contexts/AuthContext";
 import { UserProvider } from "components/contexts/UserContext";
 // eslint-disable-next-line import/order
@@ -25,13 +25,13 @@ const App: FC<AppProps> = ({ pageProps, Component }) => {
       </Head>
 
       <AuthProvider>
-        <ApolloProvider client={apolloClient}>
+        <EnhancedApolloProvider>
           <UserProvider>
             <ChakraProvider theme={theme}>
               <Component {...pageProps} />
             </ChakraProvider>
           </UserProvider>
-        </ApolloProvider>
+        </EnhancedApolloProvider>
       </AuthProvider>
     </>
   );

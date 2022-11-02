@@ -8,11 +8,9 @@ import Page from "components/layouts/Page";
 const IndexPage: NextPage = () => {
   const { user } = useContext(UserContext);
 
-  console.log(user);
-
   return (
     <Page>
-      <Container>
+      <Container maxW="6xl">
         <Heading as="h1">Hello {user?.firstName}</Heading>
       </Container>
     </Page>

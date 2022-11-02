@@ -8,6 +8,11 @@ export const USER_QUERY = gql`
       userName
       email
       timeRegistered
+      teams {
+        id_team
+        name
+        image_url
+      }
     }
   }
 `;

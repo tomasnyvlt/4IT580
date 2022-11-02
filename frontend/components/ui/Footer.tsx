@@ -3,7 +3,7 @@ import { FC } from "react";
 
 const Footer: FC = () => {
   return (
-    <Box py={{ base: "1rem", sm: "2rem" }} borderTop="1px solid" borderColor="gray.400">
+    <Box py={{ base: "1rem", sm: "2rem" }}>
       <Container maxW="6xl">
         <Text>&copy; {new Date(Date.now()).getFullYear()} Sportify</Text>
       </Container>

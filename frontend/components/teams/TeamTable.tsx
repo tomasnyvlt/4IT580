@@ -13,19 +13,19 @@ const TeamTable: FC = () => {
         </Thead>
         <Tbody>
           <Tr>
-            <Link href="/player-detail">
+            <Link href="/app/player/id">
               <Td>Hrac 1</Td>
             </Link>
             <Td>Brankář</Td>
           </Tr>
           <Tr>
-            <Link href="/player-detail">
+            <Link href="/app/player/id">
               <Td>Hrac 2</Td>
             </Link>
             <Td>útočník</Td>
           </Tr>
           <Tr>
-            <Link href="/player-detail">
+            <Link href="/app/player/id">
               <Td>Hrac 3</Td>
             </Link>
             <Td> obránce</Td>

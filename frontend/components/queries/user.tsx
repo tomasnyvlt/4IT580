@@ -5,7 +5,6 @@ export const USER_QUERY = gql`
     user(id_user: $id_user) {
       firstName
       lastName
-      userName
       email
       timeRegistered
       teams {

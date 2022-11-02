@@ -13,12 +13,12 @@ import { AUTH_TOKEN, REFRESH_TOKEN } from "config";
 import InputField from "shared/hook-form/FormField";
 
 type SignInInputs = {
-  nickname: string;
+  email: string;
   password: string;
 };
 
 const signInFormSchema = object().shape({
-  nickname: string().required().label("Nickname"),
+  email: string().required().label("E-mail"),
   password: string().required().label("Heslo")
 });
 
@@ -29,7 +29,7 @@ const SignInForm: FC = () => {
   const methods = useForm<SignInInputs>({
     resolver: yupResolver(signInFormSchema),
     defaultValues: {
-      nickname: "tom_dre",
+      email: "test@test.cz",
       password: "123123"
     }
   });
@@ -48,7 +48,7 @@ const SignInForm: FC = () => {
   const onSubmit = (data: SignInInputs) => {
     login({
       variables: {
-        userName: data.nickname,
+        email: data.email,
         password: data.password
       }
     });
@@ -60,7 +60,7 @@ const SignInForm: FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3} mb="1rem">
           <Box>
-            <InputField name="nickname" label="Nickname" placeholder="Zadej nickname" />
+            <InputField name="email" label="E-mail" type="email" placeholder="Zadej e-mail" />
           </Box>
           <Box>
             <InputField name="password" label="Heslo" type="password" placeholder="Zadej heslo" />

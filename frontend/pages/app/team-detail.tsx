@@ -45,7 +45,7 @@ const TeamDetailPage: NextPage = () => {
             borderRadius="10px"
             w="350px"
             h="200px"
-            _hover={{ backgroundColor: "blue", color: "white" }}
+            _hover={{ backgroundColor: "blue.400", color: "white" }}
           >
             <Image w="170px" h="120px" src="/static/images/8_big16.png" borderRadius="10px" alt="team-icon" />
             <Heading as="h2" size="xl" pl="10px" textAlign="center">
@@ -61,7 +61,7 @@ const TeamDetailPage: NextPage = () => {
             flexDir="column"
             alignContent="space-between"
             h="200px"
-            _hover={{ backgroundColor: "blue", color: "white" }}
+            _hover={{ backgroundColor: "blue.400", color: "white" }}
           >
             <Flex p="15px">
               <Image w="30px" h="30px" src="/static/images/sports.png" borderRadius="10px" alt="sport-icon" />
@@ -88,7 +88,7 @@ const TeamDetailPage: NextPage = () => {
             borderRadius="10px"
             w="350px"
             h="200px"
-            _hover={{ backgroundColor: "blue", color: "white" }}
+            _hover={{ backgroundColor: "blue.400", color: "white" }}
           >
             <Flex flexDir="column">
               <Flex>

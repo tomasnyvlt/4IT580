@@ -1,49 +1,39 @@
-import { Flex, Icon, Link, Menu, MenuButton, Text } from "@chakra-ui/react";
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { FC } from "react";
+import { UrlObject } from "url";
 
-// import NavHoverBox from "./NavHoverBox";
+import { Flex, Icon, Menu, MenuButton, Text } from "@chakra-ui/react";
+import NextLink from "next/link";
+import { FC } from "react";
 
 type NavItemType = {
   title: string;
-  href: string;
-  navSizes: string;
+  href: string | UrlObject;
+  isBig?: boolean;
   icon: FC;
-
   active?: boolean;
 };
 
-const NavItem: FC<NavItemType> = ({ title, href, navSizes, icon, active }) => {
+const NavItem: FC<NavItemType> = ({ title, href, isBig, icon, active }) => {
   return (
-    <Flex
-      mt={navSizes === "large" ? "20px" : "55px"}
-      flexDirection="column"
-      width="100%"
-      alignItems={navSizes === "small" ? "center" : "flex-start"}
-    >
+    <Flex flexDirection="column" width="100%" alignItems={!isBig ? "center" : "flex-start"}>
       <Menu placement="right">
-        <Link
-          p={3}
-          borderRadius={8}
-          _hover={{ textDecoration: "none", backgroundColor: "blue", color: "white" }}
-          href={href}
-          //   width={navSizes === "large" && "100%"}
-          width="100%"
-          backgroundColor={active ? "blue" : "none"}
-          color={active ? "white" : "none"}
-        >
-          <MenuButton w="100%">
+        <NextLink href={href} passHref>
+          <MenuButton
+            w="100%"
+            p={3}
+            borderRadius={8}
+            _hover={{ textDecoration: "none", backgroundColor: "blue.400", color: "white" }}
+            width="100%"
+            bg={active ? "blue.400" : "none"}
+            color={active ? "white" : "none"}
+          >
             <Flex>
               <Icon as={icon} fontSize="xl" />
-              <Text ml={5} display={navSizes === "small" ? "none" : "flex"}>
+              <Text ml={5} display={!isBig ? "none" : "flex"}>
                 {title}
               </Text>
             </Flex>
           </MenuButton>
-        </Link>
-        {/* <MenuList py={0} border="none" w={200} h={200} ml={5}>
-          <NavHoverBox title={title} icon={icon} description={description} />
-        </MenuList> */}
+        </NextLink>
       </Menu>
     </Flex>
   );

@@ -1,15 +1,11 @@
 import { Button, HStack, Stack, Text, useToast } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useRouter } from "next/router";
-import { FC, useContext } from "react";
+import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { object, ref, string } from "yup";
 
-import { UserContext } from "components/contexts/UserContext";
 import { useMutation } from "components/hooks/useMutation";
 import { REGISTER_MUTATION } from "components/mutations/register";
-import { LoginTokens } from "components/types/graphql";
-import { AUTH_TOKEN, REFRESH_TOKEN } from "config";
 import InputField from "shared/hook-form/FormField";
 
 type RegisterInputs = {
@@ -21,7 +17,7 @@ type RegisterInputs = {
   lastName: string;
 };
 
-const signInFormSchema = object().shape({
+const registerFormSchema = object().shape({
   email: string().email().required().label("E-mail"),
   emailConfirmation: string()
     .oneOf([ref("email"), null], "E-mail se neshoduje")
@@ -43,12 +39,10 @@ const signInFormSchema = object().shape({
 });
 
 const RegisterForm: FC = () => {
-  const router = useRouter();
-  const userContext = useContext(UserContext);
   const toast = useToast();
 
   const methods = useForm<RegisterInputs>({
-    resolver: yupResolver(signInFormSchema),
+    resolver: yupResolver(registerFormSchema),
     defaultValues: {
       email: "",
       emailConfirmation: "",
@@ -59,12 +53,8 @@ const RegisterForm: FC = () => {
     }
   });
 
-  const [registerLogin] = useMutation(REGISTER_MUTATION, {
-    onCompleted: (data: { registerLogin: LoginTokens }) => {
-      localStorage.setItem(AUTH_TOKEN, data.registerLogin.accessToken);
-      localStorage.setItem(REFRESH_TOKEN, data.registerLogin.refreshToken);
-      userContext?.setTokens!(data.registerLogin);
-      router.push("/");
+  const [register] = useMutation(REGISTER_MUTATION, {
+    onCompleted: () => {
       toast({
         title: "Na váše email jsme poslali potvrzení registrace.",
         description:
@@ -86,7 +76,7 @@ const RegisterForm: FC = () => {
   const { handleSubmit, reset } = methods;
 
   const onSubmit = (data: RegisterInputs) => {
-    registerLogin({
+    register({
       variables: {
         firstName: data.firstName,
         lastName: data.lastName,

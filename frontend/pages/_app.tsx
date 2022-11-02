@@ -6,6 +6,7 @@ import { FC } from "react";
 import { setLocale } from "yup";
 
 import apolloClient from "apollo/client";
+import { AuthProvider } from "components/contexts/AuthContext";
 import { UserProvider } from "components/contexts/UserContext";
 // eslint-disable-next-line import/order
 import { csLocale } from "components/locales/cs";
@@ -23,13 +24,15 @@ const App: FC<AppProps> = ({ pageProps, Component }) => {
         <title>Sportify</title>
       </Head>
 
-      <UserProvider>
+      <AuthProvider>
         <ApolloProvider client={apolloClient}>
-          <ChakraProvider theme={theme}>
-            <Component {...pageProps} />
-          </ChakraProvider>
+          <UserProvider>
+            <ChakraProvider theme={theme}>
+              <Component {...pageProps} />
+            </ChakraProvider>
+          </UserProvider>
         </ApolloProvider>
-      </UserProvider>
+      </AuthProvider>
     </>
   );
 };

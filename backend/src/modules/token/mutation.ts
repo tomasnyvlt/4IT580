@@ -52,12 +52,8 @@ export const login = async(_:void, args: LoginArgs, context: Context) => {
     }
 }
 
-type LogoutArgs = {
-    userId: number
-}
-export const logout = async (_:void, args: LogoutArgs, context: Context) => {
+export const logout = async (_:void, __:void, context: Context) => {
     if(context.auth.getUserID() == null) throw new GQLError().notAuthorized();
-    if(args.userId !== context.auth.getUserID()) throw new GQLError().notAuthorized();
 
     await context.prisma.refresh_token.deleteMany({
         where: {

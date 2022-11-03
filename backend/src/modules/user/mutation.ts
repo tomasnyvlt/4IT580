@@ -1,8 +1,11 @@
 import { hashPassword } from "../../libs/password.js";
 import { createRefreshToken, createToken } from "../../libs/token.js";
 import { GQLError } from "../../utils/return_statements/errors.js";
+import { GQLSuccess } from "../../utils/return_statements/success";
 import yup from "yup";
 import { registerLoginValidation } from "./validation.js";
+import { sendMail, createRegistrationEmailContent } from "../../libs/email.js";
+import { generateHashOfLength } from "../../libs/token.js";
 
 type RegisterLoginArgs = {
     firstName: string,
@@ -11,6 +14,8 @@ type RegisterLoginArgs = {
     password: string
 }
 export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Context) => {
+    const prisma = context.prisma;
+    /// Validation block
     try{
         await registerLoginValidation.validate(args);
     } catch(err:any) {
@@ -35,8 +40,7 @@ export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Con
         
     }
 
-    const prisma = context.prisma;
-
+    /// DB check
     const userEmail = await prisma.user.findFirst({
         where: {
             email: args.email
@@ -44,9 +48,8 @@ export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Con
     });
     if(userEmail) throw new GQLError().emailExists();
 
+    /// Create new user in database.
     const hashedPassword = await hashPassword(args.password)
-
-
     const user = await prisma.user.create({
         data: {
             first_name: args.firstName,
@@ -61,30 +64,45 @@ export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Con
         }
     });
 
-    const accessToken = createToken(user.id_user)
-    const refreshToken = createRefreshToken(user.id_user);
-    
-    await context.prisma.refresh_token.deleteMany({
+    /// Create confirmation key, store it and send it via email.
+    prisma.registration_token.deleteMany({
         where: {
-            user_id_user: user.id_user
+            valid_until: {
+                lte: new Date()
+            }
         }
     });
-
-    await context.prisma.refresh_token.create({
-        data: {
-            token: refreshToken,
-            time_valid_until: addDays(new Date(), 1),
-            user_id_user: user.id_user
+    // Generate keys until unique.
+    let exists = true
+    let confKey = "";
+    while(exists){
+        confKey = generateHashOfLength(6);
+        exists = (await prisma.registration_token.findFirst({where: {token: confKey}})) != null;
+    }
+    // Store key.
+    await prisma.registration_token.create({
+        data:{
+            id_user: user.id_user,
+            token: confKey,
+            valid_until: addMinutes(new Date(), 30)
         }
     })
-    return {
-        accessToken,
-        refreshToken
-    }
+    // Send email.
+    await sendMail({
+        recipient: args.email,
+        subject: "Sportify - confirm your registration",
+        content: createRegistrationEmailContent(args.firstName, args.lastName, confKey)
+    });
+    
+    return new GQLSuccess().registrationCompleted();
 }
 
 const addDays = (date: Date, days: number) => {
     return new Date(date.valueOf()+24*60*60*1000*days);
 }
+const addMinutes = (date: Date, minutes: number) => {
+    return new Date(date.valueOf()+60*1000*minutes);
+}
+
 
 const emailPatern = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;

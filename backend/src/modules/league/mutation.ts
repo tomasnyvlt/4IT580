@@ -28,9 +28,15 @@ export const deleteLeague = async (
   return new GQLSuccess().rowDeleted();
 };
 
+type updateLeagueArgs = {
+  id_league: number;
+  name: string | undefined;
+  description: string | undefined;
+  image_url: string | undefined;
+};
 export const updateLeague = async (
   _: void,
-  args: leagueArgs & { id_league: number },
+  args: updateLeagueArgs,
   context: Context
 ) => {
   return await context.prisma.league.update({
@@ -38,9 +44,9 @@ export const updateLeague = async (
       id_league: args.id_league,
     },
     data: {
-      name: args.name,
+      name: args?.name,
       description: args?.description,
-      image_url: args.image_url,
+      image_url: args?.image_url,
     },
   });
 };

@@ -18,6 +18,11 @@ export const typeDef = /* GraphQL */ `
   extend type Mutation {
     addLeague(name: String!, description: String, image_url: String!): League!
     deleteLeague(id_league: Int!): String!
-    updateLeague(id_league: Int!): String!
+    updateLeague(
+      id_league: Int!
+      name: String
+      description: String
+      image_url: String
+    ): League!
   }
 `;

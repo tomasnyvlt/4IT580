@@ -170,8 +170,8 @@ model user {
   first_name               String                     @db.VarChar(45)
   last_name                String                     @db.VarChar(45)
   email                    String                     @db.VarChar(120)
-  time_registered          DateTime?                  @default(now()) @db.DateTime(0)
-  time_last_login          DateTime?                  @default(now()) @db.DateTime(0)
+  time_registered          DateTime?                  @db.DateTime(0)
+  time_last_login          DateTime?                  @db.DateTime(0)
   event                    event[]
   league_has_administrator league_has_administrator[]
   login                    login[]

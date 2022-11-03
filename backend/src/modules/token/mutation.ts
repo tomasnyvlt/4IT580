@@ -16,17 +16,18 @@ export const login = async(_:void, args: LoginArgs, context: Context) => {
             email: args.email
         }
     });
-    if(!user) throw new Error("NO_USER");
+    if(!user) throw new GQLError().noMatches();
+    if(user.time_registered === null) throw new GQLError().notVerified();
     // Get login details
     const login = await prisma.login.findFirst({
         where: {
             id_user: user.id_user
         }
     });
-    if(!login) throw new Error("NO_PSW_TO_USER");
+    if(!login) throw new GQLError().noMatches();
     // Compare passwords
     const passwordVerified = await comparePasswords(args.password, login.password);
-    if(!passwordVerified) throw new Error("WRG_PSW");
+    if(!passwordVerified) throw new GQLError().invalidArgument("password");
 
     // Passwords are OK.
     const accessToken = createToken(user.id_user);

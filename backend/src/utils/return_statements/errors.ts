@@ -52,4 +52,7 @@ export class GQLError {
   wrongPasswordLength(){
     return this.error(`Password must have atleast length of 6 characters.`, 'WRONG_LENGTH');
   }
+  notVerified(){
+    return this.error('Not verified', 'NOT_VERIFIED');
+  }
 }

@@ -6,6 +6,8 @@ import yup from "yup";
 import { registerLoginValidation } from "./validation.js";
 import { sendMail, createRegistrationEmailContent } from "../../libs/email.js";
 import { generateHashOfLength } from "../../libs/token.js";
+import { VALIDATION_CODE_LENGTH } from "../../config/variables.js";
+import { Prisma, registration_token } from "@prisma/client";
 
 type RegisterLoginArgs = {
     firstName: string,
@@ -37,7 +39,6 @@ export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Con
                 throw new GQLError().error(err.message, "ERR");
             }
         }
-        
     }
 
     /// DB check
@@ -54,7 +55,9 @@ export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Con
         data: {
             first_name: args.firstName,
             last_name: args.lastName,
-            email: args.email
+            email: args.email,
+            time_registered: null,
+            time_last_login: null
         }
     });
     const login = await prisma.login.create({
@@ -65,18 +68,12 @@ export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Con
     });
 
     /// Create confirmation key, store it and send it via email.
-    prisma.registration_token.deleteMany({
-        where: {
-            valid_until: {
-                lte: new Date()
-            }
-        }
-    });
+    await deleteOldConfirmationTokens(context.prisma);
     // Generate keys until unique.
     let exists = true
     let confKey = "";
     while(exists){
-        confKey = generateHashOfLength(6);
+        confKey = generateHashOfLength(VALIDATION_CODE_LENGTH);
         exists = (await prisma.registration_token.findFirst({where: {token: confKey}})) != null;
     }
     // Store key.
@@ -97,6 +94,82 @@ export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Con
     return new GQLSuccess().registrationCompleted();
 }
 
+type ConfirmRegistrationArgs = {
+    confirmationCode: string
+}
+export const confirmRegistration = async(_:void, args: ConfirmRegistrationArgs, context: Context) => {
+    if(args.confirmationCode.length !== VALIDATION_CODE_LENGTH) throw new GQLError().invalidArgument("confirmationCode");
+    await deleteOldConfirmationTokens(context.prisma);
+    // Find token.
+    const dbRow = await context.prisma.registration_token.findFirst({
+        where: {
+            token: args.confirmationCode
+        }
+    });
+    if(dbRow === null) throw new GQLError().noMatches();
+
+    await context.prisma.user.update({
+        where: {
+            id_user: dbRow.id_user
+        },
+        data: {
+            time_registered: new Date()
+        }
+    });
+
+    await context.prisma.registration_token.delete({
+        where: {
+            token: args.confirmationCode
+        }
+    });
+
+    const accessToken = createToken(dbRow.id_user);
+    const refreshToken = createRefreshToken(dbRow.id_user);
+
+
+    const expiredTokens = await context.prisma.registration_token.findMany({
+        where: {
+            valid_until: {
+                lte: new Date()
+            }
+        }
+    });
+    
+
+    return {
+        accessToken,
+        refreshToken
+    }
+}
+
+const deleteOldConfirmationTokens = async (prisma:any) => {
+    const now = new Date()
+    // Get expired tokens.
+    const expiredTokens = await prisma.registration_token.findMany({
+        where: {
+            valid_until: {
+                lte: now
+            }
+        }
+    });
+    // Delete all users that didnt confirm registration.
+    expiredTokens.forEach(async (token:registration_token) => {
+        const user = await prisma.user.findFirst({where: {id_user: token.id_user}});
+        // If time registered is NULL means that user didnt confirm their registration.
+        if(user?.time_registered === null){
+            await prisma.login.deleteMany({where: {id_user: token.id_user}});
+            await prisma.user.deleteMany({where: {id_user: token.id_user}});
+        } 
+    });
+    // Delete expired tokens.
+    await prisma.registration_token.deleteMany({
+        where: {
+            valid_until: {
+                lte: now
+            }
+        }
+    });
+}
 const addDays = (date: Date, days: number) => {
     return new Date(date.valueOf()+24*60*60*1000*days);
 }

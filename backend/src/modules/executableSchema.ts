@@ -6,6 +6,7 @@ import { typeDef as TeamHasPlayers, resolvers as teamHasPlayersResolvers } from 
 import { typeDef as TeamMetaData, resolvers as teamMetaDataResolvers } from './team_meta_data/index.js'
 import { typeDef as User, resolvers as userResolvers } from './user/index.js';
 import { typeDef as Token, resolvers as tokenResolvers } from './token/index.js';
+import { typeDef as Event, resolvers as eventResolvers } from './event/index.js';
 
 // based on - https://www.apollographql.com/blog/backend/schema-design/modularizing-your-graphql-schema-code/
 const Query = /* GraphQL */ `
@@ -23,6 +24,6 @@ const Mutation = /* GraphQL */ `
 const resolvers = {};
 
 export const schema = makeExecutableSchema({
-  typeDefs: [Query, Mutation, User, EventType, Token, Team, TeamHasPlayers, TeamMetaData],
-  resolvers: merge(resolvers, userResolvers, eventTypeResolvers, tokenResolvers, teamResolvers, teamHasPlayersResolvers, teamMetaDataResolvers),
+  typeDefs: [Query, Mutation, User, EventType, Token, Team, TeamHasPlayers, TeamMetaData, Event],
+  resolvers: merge(resolvers, userResolvers, eventTypeResolvers, tokenResolvers, teamResolvers, teamHasPlayersResolvers, teamMetaDataResolvers, eventResolvers),
 });

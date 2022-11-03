@@ -9,6 +9,7 @@ import { typeDef as Token, resolvers as tokenResolvers } from './token/index.js'
 import { typeDef as League, resolvers as leagueResolvers } from './league/index.js'
 
 import { sendMail, createRegistrationEmailContent } from "../libs/email.js";
+import { generateHashOfLength } from "../libs/token.js";
 
 // based on - https://www.apollographql.com/blog/backend/schema-design/modularizing-your-graphql-schema-code/
 const Query = /* GraphQL */ `
@@ -20,10 +21,24 @@ const Query = /* GraphQL */ `
 const Mutation = /* GraphQL */ `
   type Mutation {
     _empty(nothing: String): String
+    testMail: String
   }
 `;
 
-const resolvers = {};
+const resolvers = {
+  Mutation: {
+    testMail: async() => {
+      const code = generateHashOfLength(6);
+      await sendMail({
+        recipient: "tonyfinito@gmail.com",
+        from: "noreply@sportify.com",
+        subject: "testing email",
+        content: createRegistrationEmailContent("Michal", "Dvorak", code)
+      });
+      return "ok"
+    }
+  }
+};
 
 export const schema = makeExecutableSchema({
   typeDefs: [Query, Mutation, User, EventType, Token, Team, TeamHasPlayers, TeamMetaData, League],

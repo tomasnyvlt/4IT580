@@ -1,6 +1,6 @@
 import { describe, it, expect, test } from "@jest/globals";
 import { createAppUser } from "../types/AppUser.js";
-import { stripTokenFromHeader, verifyTokenFromHeader, createToken, verifyToken, createRefreshToken, verifyRefreshToken } from "./token.js"
+import { stripTokenFromHeader, verifyTokenFromHeader, createToken, verifyToken, createRefreshToken, verifyRefreshToken, generateHashOfLength } from "./token.js"
 
 const testTokenContent = createAppUser(10);
 
@@ -52,4 +52,13 @@ describe("JWT handler", () => {
         expect(verified).toBe(testTokenContent.getUserID());
     })
 
-})
+    test("Can generate random string of even length", () => {
+        const code = generateHashOfLength(4);
+        expect(code.length).toBe(4);
+    });
+
+    test("Random hash generator can generate string of odd length", () => {
+        const code = generateHashOfLength(5);
+        expect(code.length).toBe(5);
+    })
+});

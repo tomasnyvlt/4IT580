@@ -1,6 +1,8 @@
 import nodemailer from 'nodemailer';
 import {MAIL_HOST, MAIL_USER, MAIL_PASSWORD} from "../config/variables.js"
 
+const FALLBACK_EMAIL = "noreply@sportify.com"
+
 const transporter = nodemailer.createTransport({
     host: MAIL_HOST,
     port: 587,
@@ -11,7 +13,7 @@ const transporter = nodemailer.createTransport({
 });
 
 type SendMailArgs = {
-    from: string,
+    from?: string,
     recipient: string,
     subject: string,
     content: string
@@ -19,7 +21,7 @@ type SendMailArgs = {
 
 export const sendMail = async (args: SendMailArgs) => {
     const info = await transporter.sendMail({
-        from: args.from,
+        from: args.from ?? FALLBACK_EMAIL,
         to: args.recipient,
         subject: args.subject,
         html: args.content
@@ -36,7 +38,7 @@ export const createRegistrationEmailContent = (firstName: string, lastName: stri
     <title>Simple Transactional Email</title>
 </head>
 <body>
-    <h1>Hello ${firstName} ${lastName},<h1>
+    <h1>Hello ${firstName} ${lastName},</h1>
     <p>Thank you for joining to our Sportify Community.</p>
     <br />
     <p>The confirmation code you are looking for is right here:</p>
@@ -47,5 +49,6 @@ export const createRegistrationEmailContent = (firstName: string, lastName: stri
     <p>Best,<br/>
     The Sportify team  </p>
 </body>
+</html>
     `;
 }

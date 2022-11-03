@@ -1,11 +1,11 @@
-import { Box, Button, Stack, useToast } from "@chakra-ui/react";
+import { Box, Button, Stack } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
 import { FC, useContext } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { object, string } from "yup";
 
-import { UserContext } from "components/contexts/UserContext";
+import { AuthContext } from "components/contexts/AuthContext";
 import { useMutation } from "components/hooks/useMutation";
 import { LOGIN_MUTATION } from "components/mutations/login";
 import { LoginTokens } from "components/types/graphql";
@@ -13,24 +13,23 @@ import { AUTH_TOKEN, REFRESH_TOKEN } from "config";
 import InputField from "shared/hook-form/FormField";
 
 type SignInInputs = {
-  nickname: string;
+  email: string;
   password: string;
 };
 
 const signInFormSchema = object().shape({
-  nickname: string().required().label("Nickname"),
+  email: string().required().label("E-mail"),
   password: string().required().label("Heslo")
 });
 
 const SignInForm: FC = () => {
   const router = useRouter();
-  const userContext = useContext(UserContext);
-  const toast = useToast();
+  const authContext = useContext(AuthContext);
 
   const methods = useForm<SignInInputs>({
     resolver: yupResolver(signInFormSchema),
     defaultValues: {
-      nickname: "tom_dre",
+      email: "test@test.cz",
       password: "123123"
     }
   });
@@ -39,16 +38,9 @@ const SignInForm: FC = () => {
     onCompleted: (data: { login: LoginTokens }) => {
       localStorage.setItem(AUTH_TOKEN, data.login.accessToken);
       localStorage.setItem(REFRESH_TOKEN, data.login.refreshToken);
-      userContext?.setTokens!(data.login);
+      authContext?.setTokens!(data.login);
       router.push("/app");
-    },
-    onError: (error) =>
-      toast({
-        title: error.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true
-      })
+    }
   });
 
   const { handleSubmit, reset } = methods;
@@ -56,7 +48,7 @@ const SignInForm: FC = () => {
   const onSubmit = (data: SignInInputs) => {
     login({
       variables: {
-        userName: data.nickname,
+        email: data.email,
         password: data.password
       }
     });
@@ -68,7 +60,7 @@ const SignInForm: FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3} mb="1rem">
           <Box>
-            <InputField name="nickname" label="Nickname" placeholder="Zadej nickname" />
+            <InputField name="email" label="E-mail" type="email" placeholder="Zadej e-mail" />
           </Box>
           <Box>
             <InputField name="password" label="Heslo" type="password" placeholder="Zadej heslo" />

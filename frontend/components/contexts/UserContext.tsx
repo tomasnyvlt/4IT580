@@ -1,54 +1,49 @@
 import jwtDecode, { JwtPayload } from "jwt-decode";
-import { ReactNode, createContext, useEffect, useMemo, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { LoginTokens } from "components/types/graphql";
-import { AUTH_TOKEN } from "config";
-
-export interface UserProps {
-  name: string;
-  surname: string;
-  email: string;
-}
+import { AuthContext } from "components/contexts/AuthContext";
+import { useQuery } from "components/hooks/useQuery";
+import { USER_QUERY } from "components/queries/user";
+import { User as UserProps } from "components/types/graphql";
 
 interface UserContextProps {
   user?: UserProps | undefined;
   setUser?: (user: UserProps | undefined) => void;
-  tokens: LoginTokens | undefined;
-  setTokens?: (tokens: LoginTokens) => void;
 }
 
-export const UserContext = createContext<UserContextProps>({ tokens: { accessToken: "", refreshToken: "" } });
+export const UserContext = createContext<UserContextProps>({});
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserProps>();
-  const [tokens, setTokens] = useState<LoginTokens | undefined>({ accessToken: "", refreshToken: "" });
+  const [userId, setUserId] = useState<string>();
+  const authContext = useContext(AuthContext);
+
+  const { data } = useQuery(USER_QUERY, {
+    variables: {
+      id_user: userId
+    }
+  });
 
   useEffect(() => {
-    if (localStorage?.getItem(AUTH_TOKEN)) {
-      setTokens({ refreshToken: "", accessToken: localStorage!.getItem(AUTH_TOKEN)!.toString() });
-    } else {
-      setTokens(undefined);
+    if (data && data.user) {
+      setUser(data.user);
     }
-  }, []);
+  }, [data]);
 
   useEffect(() => {
-    if (tokens?.accessToken) {
-      const expiration = jwtDecode<JwtPayload>(tokens.accessToken as string).exp;
+    if (authContext.tokens?.accessToken) {
+      const userIdToken = jwtDecode<JwtPayload & { id_user: string }>(authContext.tokens.accessToken as string).id_user;
 
-      if (new Date() < new Date((expiration as number) * 1000)) {
-        // token vypršel
-      }
+      setUserId(userIdToken);
     }
-  }, [tokens]);
+  }, [authContext]);
 
   const userProviderValue: UserContextProps = useMemo(() => {
     return {
       user,
-      setUser,
-      tokens,
-      setTokens
+      setUser
     };
-  }, [user, setUser, tokens, setTokens]);
+  }, [user, setUser]);
 
   return <UserContext.Provider value={userProviderValue}>{children}</UserContext.Provider>;
 };

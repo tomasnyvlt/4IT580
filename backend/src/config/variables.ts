@@ -14,3 +14,4 @@ export const DB_NAME = process.env.DB_NAME || "";
 export const MAIL_HOST = process.env.MAIL_HOST || "";
 export const MAIL_USER = process.env.MAIL_USER || "";
 export const MAIL_PASSWORD = process.env.MAIL_PASSWORD || "";
+export const VALIDATION_CODE_LENGTH = 6;

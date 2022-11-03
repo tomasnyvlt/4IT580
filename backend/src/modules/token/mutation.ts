@@ -5,7 +5,7 @@ import { GQLError } from '../../utils/return_statements/errors.js';
 import { GQLSuccess } from '../../utils/return_statements/success.js';
 
 type LoginArgs = {
-    userName: string,
+    email: string,
     password: string
 }
 export const login = async(_:void, args: LoginArgs, context: Context) => {
@@ -13,20 +13,21 @@ export const login = async(_:void, args: LoginArgs, context: Context) => {
     // Get user
     const user = await prisma.user.findFirst({
         where: {
-            user_name: args.userName
+            email: args.email
         }
     });
-    if(!user) throw new Error("NO_USER");
+    if(!user) throw new GQLError().noMatches();
+    if(user.time_registered === null) throw new GQLError().notVerified();
     // Get login details
     const login = await prisma.login.findFirst({
         where: {
             id_user: user.id_user
         }
     });
-    if(!login) throw new Error("NO_PSW_TO_USER");
+    if(!login) throw new GQLError().noMatches();
     // Compare passwords
     const passwordVerified = await comparePasswords(args.password, login.password);
-    if(!passwordVerified) throw new Error("WRG_PSW");
+    if(!passwordVerified) throw new GQLError().invalidArgument("password");
 
     // Passwords are OK.
     const accessToken = createToken(user.id_user);
@@ -51,12 +52,8 @@ export const login = async(_:void, args: LoginArgs, context: Context) => {
     }
 }
 
-type LogoutArgs = {
-    userId: number
-}
-export const logout = async (_:void, args: LogoutArgs, context: Context) => {
+export const logout = async (_:void, __:void, context: Context) => {
     if(context.auth.getUserID() == null) throw new GQLError().notAuthorized();
-    if(args.userId !== context.auth.getUserID()) throw new GQLError().notAuthorized();
 
     await context.prisma.refresh_token.deleteMany({
         where: {
@@ -71,13 +68,6 @@ type RefreshArgs = {
 }
 export const refresh = async(_:void, args: RefreshArgs, context: Context) => {
     const userId = await verifyRefreshToken(args.refreshToken);
-    let requestUserId;
-    try{
-        requestUserId = context.auth.getUserID();
-    } catch(err:any) {
-        requestUserId = err.extensions?.data?.id_user;
-    }
-    if(userId !== requestUserId) throw new GQLError().notAuthorized();
     const tokenDb = await context.prisma.refresh_token.findFirst({
         where: {
             user_id_user: userId,

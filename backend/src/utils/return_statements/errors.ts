@@ -43,10 +43,16 @@ export class GQLError {
   emailExists(){
     return this.error('User with this email already exists.', 'USER_EMAIL_EXISTS');
   }
-  usernameExists(){
-    return this.error('User with this user name already exists.', 'USER_NAME_EXISTS');
-  }
   invalidEmail(){
     return this.error('Email is not in valid form.', 'INVALID_EMAIL');
+  }
+  invalidPasswordContent(){
+    return this.error('Password must contain combination of atleast one lower case character, one upper case character, one number and one special character.', 'INVALID_PSW');
+  }
+  wrongPasswordLength(){
+    return this.error(`Password must have atleast length of 6 characters.`, 'WRONG_LENGTH');
+  }
+  notVerified(){
+    return this.error('Not verified', 'NOT_VERIFIED');
   }
 }

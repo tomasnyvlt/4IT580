@@ -19,4 +19,8 @@ export class GQLSuccess {
   rowsDeleted(count: number) {
     return 'Succesfully deleted ' + count + ' rows!';
   }
+
+  registrationCompleted() {
+    return 'Registration completed, please check your email for confirmation code.'
+  }
 }

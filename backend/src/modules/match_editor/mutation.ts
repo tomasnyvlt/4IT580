@@ -22,7 +22,6 @@ type addMatchEditorArgs = {
   user_id_user: number | undefined;
   match_id_match: number;
 };
-//TODO Test
 export const addMatchEditor = async (
   _: void,
   args: addMatchEditorArgs,
@@ -32,4 +31,32 @@ export const addMatchEditor = async (
     data: args,
   });
   return addMatchEditor;
+};
+
+type updateMatchEditorArgs = {
+  id_match_editor: number;
+  match_id_match: number;
+  first_name: string | undefined;
+  last_name: string | undefined;
+  user_id_user: number | undefined;
+};
+export const updateMatchEditor = async (
+  _: void,
+  args: updateMatchEditorArgs,
+  context: Context
+) => {
+  const updateMatchEditor = await context.prisma.match_editor.update({
+    data: {
+      first_name: args?.first_name,
+      last_name: args?.last_name,
+      user_id_user: args?.user_id_user,
+    },
+    where: {
+      id_match_editor_match_id_match: {
+        id_match_editor: args.id_match_editor,
+        match_id_match: args.match_id_match,
+      },
+    },
+  });
+  return updateMatchEditor
 };

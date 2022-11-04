@@ -22,5 +22,12 @@ export const typeDef = gql`
       match_id_match: Int!
     ): Match_editor!
     deleteMatchEditor(id_match_editor: Int!, match_id_match: Int!): String!
+    updateMatchEditor(
+      id_match_editor: Int!
+      match_id_match: Int!
+      first_name: String
+      last_name: String
+      user_id_user: Int
+    ): Match_editor!
   }
 `;

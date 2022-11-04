@@ -1,7 +1,11 @@
-import { deleteTeamArgs } from './mutation.js';
+import { GQLError } from "../../utils/return_statements/errors.js";
+import { deleteTeamArgs } from "./mutation.js";
 
 export const teams = async (_: void, __: void, context: Context) => {
   const teams = await context.prisma.team.findMany();
+  if (teams.length < 1) {
+    throw new GQLError().noMatches();
+  }
   return teams.slice(0, 20);
 };
 

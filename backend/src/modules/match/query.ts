@@ -13,4 +13,5 @@ export const match = async (
       id_match: args.id_match,
     },
   });
+  return match
 };

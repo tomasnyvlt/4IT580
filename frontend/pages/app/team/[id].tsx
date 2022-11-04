@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { EmailIcon, PhoneIcon } from "@chakra-ui/icons";
-import { Avatar, Container, Flex, Heading, Icon, Image, SimpleGrid, Text, chakra } from "@chakra-ui/react";
+import { Avatar, Container, Flex, Heading, Icon, Image, Select, SimpleGrid, Text, chakra } from "@chakra-ui/react";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createColumnHelper } from "@tanstack/table-core";
 import { NextPage } from "next";
@@ -10,6 +10,7 @@ import Basic from "components/cards/Basic";
 import Page from "components/layouts/Page";
 import { Team as TeamProps } from "components/types/graphql";
 import DataTable from "components/ui/DataTable";
+import { useState } from "react";
 
 interface TeamDetailPageProps {
   team: TeamProps;
@@ -17,36 +18,91 @@ interface TeamDetailPageProps {
 
 interface PlayerProps {
   name: string;
-  surname: string;
+  gamesPlayed: number;
+  gol: number;
+  assistance: number;
+  canadianGols: number;
+  averageCanadianGols: number;
+  pinalityMinutes: number;
   role: "Brankář" | "Obrana" | "Útok";
+  season: string;
 }
 
-const fakePlayersData: PlayerProps[] = [...Array(12)].map((_, index) => {
+const fakePlayersData2021: PlayerProps[] = [...Array(12)].map((_, index) => {
   return {
-    name: `${index} Honza`,
-    surname: "Bílý",
-    role: "Obrana"
+    name: `${index} Honza Bílý`,
+    role: "Obrana",
+    gamesPlayed: 1,
+    gol: 2,
+    assistance: 8,
+    canadianGols: 10,
+    averageCanadianGols: 2,
+    pinalityMinutes: 4,
+    season: "2020-2021"
   };
 });
+
+const fakePlayersData2022: PlayerProps[] = [...Array(12)].map((_, index) => {
+  return {
+    name: `${index} Honza Černý`,
+    role: "Obrana",
+    gamesPlayed: 2,
+    gol: 3,
+    assistance: 3,
+    canadianGols: 6,
+    averageCanadianGols: 2,
+    pinalityMinutes: 3,
+    season: "2021-2022"
+  };
+});
+
+const fakePlayersData = [...fakePlayersData2021, ...fakePlayersData2022];
 
 const columnHelper = createColumnHelper<PlayerProps>();
 
 const playersColumn = [
   columnHelper.accessor("name", {
     cell: (info) => info.getValue(),
-    header: "Jméno"
-  }),
-  columnHelper.accessor("surname", {
-    cell: (info) => info.getValue(),
-    header: "Příjmení"
+    header: "Hráč"
   }),
   columnHelper.accessor("role", {
     cell: (info) => info.getValue(),
     header: "Pozice"
+  }),
+  columnHelper.accessor("gamesPlayed", {
+    cell: (info) => info.getValue(),
+    header: "GP"
+  }),
+  columnHelper.accessor("gol", {
+    cell: (info) => info.getValue(),
+    header: "G"
+  }),
+  columnHelper.accessor("assistance", {
+    cell: (info) => info.getValue(),
+    header: "A"
+  }),
+  columnHelper.accessor("canadianGols", {
+    cell: (info) => info.getValue(),
+    header: "KG"
+  }),
+  columnHelper.accessor("averageCanadianGols", {
+    cell: (info) => info.getValue(),
+    header: "AvgKG"
+  }),
+  columnHelper.accessor("pinalityMinutes", {
+    cell: (info) => info.getValue(),
+    header: "PIM"
+  }),
+  columnHelper.accessor("season", {
+    cell: (info) => info.getValue(),
+    header: "Sezóna"
   })
 ];
 
+const seasons = ["2020-2021", "2021-2022"];
+
 const TeamDetailPage: NextPage<TeamDetailPageProps> = ({ team }) => {
+  const [option, setOption] = useState(" ");
   return (
     <Page>
       <Container maxW="6xl" gap="3rem" display="flex" flexDirection="column">
@@ -106,11 +162,26 @@ const TeamDetailPage: NextPage<TeamDetailPageProps> = ({ team }) => {
           </Basic>
         </SimpleGrid>
 
-        <Basic heading="Soupiska hráčů">
-          <DataTable columns={playersColumn} data={fakePlayersData} />
+        <Basic heading="Sezóny">
+          <Select value={option} onChange={(e) => setOption(e.target.value)}>
+            {seasons.map((season) => {
+              return (
+                <option key={season.toString()} value={season} selected>
+                  {season}
+                </option>
+              );
+            })}
+          </Select>
         </Basic>
 
-        <Basic heading="Sezóny" />
+        <Basic heading="Statistiky">
+          <DataTable
+            columns={playersColumn}
+            data={fakePlayersData.filter((data) => {
+              return option === " " ? data : data.season === option;
+            })}
+          />
+        </Basic>
 
         <Basic heading="Statistiky týmu" />
       </Container>

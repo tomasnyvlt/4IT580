@@ -9,18 +9,18 @@ datasource db {
 
 model event {
   id_event         Int        @default(autoincrement()) @db.UnsignedInt @unique
-  time_happened    DateTime?  @default(now()) @db.DateTime(0)
+  time_happened    String?    @db.VarChar(6)
   id_match         Int        @db.UnsignedInt
   id_event_type    Int        @db.UnsignedInt
   user_id_user     Int        @db.UnsignedInt
-  id_counter_event Int        @db.UnsignedInt
-  event            event      @relation("eventToevent", fields: [id_counter_event], references: [id_event], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_event1")
+  id_counter_event Int?        @db.UnsignedInt
+  event            event?      @relation("eventToevent", fields: [id_counter_event], references: [id_event], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_event1")
   event_type       event_type @relation(fields: [id_event_type], references: [id_event_type], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_event_type1")
   match            match      @relation(fields: [id_match], references: [id_match], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_match1")
   user             user       @relation(fields: [user_id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_user1")
   other_event      event[]    @relation("eventToevent")
 
-  @@id([id_event, id_counter_event])
+  @@id([id_event])
   @@index([id_counter_event], map: "fk_event_event1")
   @@index([id_event_type], map: "fk_event_event_type1")
   @@index([id_match], map: "fk_event_match1")

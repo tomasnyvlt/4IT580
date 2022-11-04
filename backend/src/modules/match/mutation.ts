@@ -55,4 +55,5 @@ export const updateMatch = async (
       id_league: args?.id_league,
     },
   });
+  return updateMatch
 };

@@ -1,4 +1,6 @@
-import { GQLSuccess } from "../../utils/return_statements/success";
+import { GQLSuccess } from "../../utils/return_statements/success.js";
+import { generateHashOfLength } from "../../libs/token.js";
+const crypto = require("crypto");
 
 type addMatchArgs = {
   time_start: string;
@@ -10,15 +12,15 @@ export const addMatch = async (
   args: addMatchArgs,
   context: Context
 ) => {
-  //TODO chybí time_created a edit_hash
-  //const addMatch = await context.prisma.match.create({
-  //  data: {
-  //    time_start: args.time_start,
-  //    state: args.state,
-  //    id_league: args.id_league
-  //  }
-  //})
-  //return addMatch
+  const addMatch = await context.prisma.match.create({
+    data: {
+      edit_hash: generateHashOfLength(32),
+      time_start: new Date(args.time_start),
+      state: args.state,
+      id_league: args.id_league,
+    },
+  });
+  return addMatch;
 };
 
 export const deleteMatch = async (

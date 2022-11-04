@@ -6,6 +6,9 @@
   "license": "MIT",
   "private": true,
   "type": "commonjs",
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "scripts": {
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/index.js\"",
     "start": "node ./dist/src/index.js",

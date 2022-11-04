@@ -55,4 +55,7 @@ export class GQLError {
   notVerified(){
     return this.error('Not verified', 'NOT_VERIFIED');
   }
+  noEventRecieverSet(){
+    return this.error('No second reciever of the event set.', 'NO_EVENT_RECIEVER');
+  }
 }

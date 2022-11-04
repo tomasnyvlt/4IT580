@@ -8,6 +8,7 @@ import { typeDef as User, resolvers as userResolvers } from './user/index.js';
 import { typeDef as Token, resolvers as tokenResolvers } from './token/index.js';
 import { typeDef as Match, resolvers as matchResolvers } from './match/index.js'
 import { typeDef as League, resolvers as leagueResolvers } from './league/index.js'
+import { typeDef as MatchEditor, resolvers as matchEditorResolvers } from './match_editor/index.js'
 
 import { sendMail, createRegistrationEmailContent } from "../libs/email.js";
 import { generateHashOfLength } from "../libs/token.js";
@@ -42,6 +43,6 @@ const resolvers = {
 };
 
 export const schema = makeExecutableSchema({
-  typeDefs: [Query, Mutation, User, EventType, Token, Team, TeamHasPlayers, TeamMetaData, Match, League],
-  resolvers: merge(resolvers, userResolvers, eventTypeResolvers, tokenResolvers, teamResolvers, teamHasPlayersResolvers, teamMetaDataResolvers, matchResolvers, leagueResolvers),
+  typeDefs: [Query, Mutation, User, EventType, Token, Team, TeamHasPlayers, TeamMetaData, Match, League, MatchEditor],
+  resolvers: merge(resolvers, userResolvers, eventTypeResolvers, tokenResolvers, teamResolvers, teamHasPlayersResolvers, teamMetaDataResolvers, matchResolvers, leagueResolvers, matchEditorResolvers),
 });

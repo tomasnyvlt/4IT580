@@ -1,5 +1,10 @@
+import { GQLError } from "../../utils/return_statements/errors";
+
 export const leagues = async (_: void, __: void, context: Context) => {
   const leagues = await context.prisma.league.findMany();
+  if (leagues.length < 1) {
+    throw new GQLError().noMatches();
+  }
   return leagues.slice(0, 20);
 };
 

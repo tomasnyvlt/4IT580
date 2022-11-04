@@ -9,6 +9,7 @@ const resolvers: IResolvers<any, Context> = {
   Mutation: { ...mutations },
   User: {
     teams: userSpecific.userTeams,
+    events: userSpecific.userEvents
   },
 };
 

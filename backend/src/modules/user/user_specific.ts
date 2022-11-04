@@ -24,3 +24,10 @@ export const userTeams = async (
   });
   return teams.slice(0, 20);
 };
+
+type userEventsArgs = {
+  teamId: number
+}
+export const userEvents = async (parent: parentUser, _: void,context: Context) => {
+
+}

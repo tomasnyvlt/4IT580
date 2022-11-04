@@ -11,7 +11,6 @@ export const formatPlayer = (player: user) => {
     id: player.id_user,
     firstName: player.first_name,
     lastName: player.last_name,
-    userName: player.user_name,
     email: player.email,
     timeRegistered: player.time_registered?.toISOString(),
     timeLastLogin: player.time_last_login?.toISOString(),

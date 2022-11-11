@@ -1,3 +1,4 @@
+import { formatEvent } from "../../utils/format";
 import { getCounterEvent } from "./counter_event_relations";
 
 export type AddEventArgs = {
@@ -20,7 +21,8 @@ export const addEvent = async (_:void, args: AddEventArgs, context: Context) => 
             time_happened: args.time,
             id_match: args.matchId,
             id_event_type: eventType.id_event_type,
-            user_id_user: args.userId
+            user_id_user: args.userId,
+            id_counter_event: undefined
         }
     });
     // Find counter event, create it and get its ID.
@@ -33,6 +35,6 @@ export const addEvent = async (_:void, args: AddEventArgs, context: Context) => 
         data: {
             id_counter_event: counterEventId
         }
-    })
-    return event;
+    });
+    return formatEvent(event);
 }

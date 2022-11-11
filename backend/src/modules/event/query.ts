@@ -1,3 +1,6 @@
+import { formatEvent } from "../../utils/format";
+import { GQLError } from "../../utils/return_statements/errors";
+
 export const events = async (_:void, __:void, context: Context) => {
     const prisma = context.prisma;
     const events = await prisma.event.findMany()
@@ -14,8 +17,6 @@ export const event = async (_:void, args:eventArgs, context: Context) => {
             id_event: args.idEvent
         }
     });
-    return {
-        ...event,
-        timeHappened: event?.time_happened
-    }
+    if(event == null) throw new GQLError().noMatches();
+    return formatEvent(event);
 }

@@ -4,7 +4,6 @@ export type UserArgs = {
     id_user: number
 }
 export const user = async(_:void, args:UserArgs, context: Context) => {
-    if(context.auth.getUserID() !== args.id_user) throw new GQLError().notAuthenticated();
     const prisma = context.prisma;
     const result = await prisma.user.findFirst({
         where: {

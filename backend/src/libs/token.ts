@@ -14,7 +14,7 @@ export function createToken(userID: number) {
   const content = {
     id_user: userID
   }
-  return jwt.sign(content, JWT_SECRET, { expiresIn: '5min'});
+  return jwt.sign(content, JWT_SECRET, { expiresIn: '15min'});
 }
 
 /**

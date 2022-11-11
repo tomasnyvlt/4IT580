@@ -17,6 +17,7 @@ export const typeDef = gql`
     id_league: Int!
     teams: [Team]
     match_editors: [Match_editor]
+    events(teamId: Int!): [Event]!
   }
 
   extend type Query {

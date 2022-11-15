@@ -1,16 +1,18 @@
+import { ParsedUrlQuery } from "querystring";
+
 import { gql } from "@apollo/client";
 import { EmailIcon, PhoneIcon } from "@chakra-ui/icons";
-import { Avatar, Container, Flex, Heading, Icon, Image, Select, SimpleGrid, Text, chakra } from "@chakra-ui/react";
+import { Avatar, Box, Container, Flex, Heading, Icon, Image, Select, SimpleGrid, Text, chakra } from "@chakra-ui/react";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createColumnHelper } from "@tanstack/table-core";
 import { NextPage } from "next";
+import { useState } from "react";
 
 import client from "apollo/client";
 import Basic from "components/cards/Basic";
-import Page from "components/layouts/Page";
-import { Team as TeamProps } from "components/types/graphql";
+import AuthorizedPage from "components/layouts/AuthorizedPage";
 import DataTable from "components/ui/DataTable";
-import { useState } from "react";
+import { Team as TeamProps, TeamDetailDocument } from "types/generated-types";
 
 interface TeamDetailPageProps {
   team: TeamProps;
@@ -103,66 +105,73 @@ const seasons = ["2020-2021", "2021-2022"];
 
 const TeamDetailPage: NextPage<TeamDetailPageProps> = ({ team }) => {
   const [option, setOption] = useState(" ");
+
   return (
-    <Page>
-      <Container maxW="6xl" gap="3rem" display="flex" flexDirection="column">
-        <Flex gap="1rem" alignItems="center">
-          <Avatar size="md" name={team.name ?? "T"} {...(team.image_url && { src: team.image_url })} />
-          <Heading as="h1">{team.name}</Heading>
-        </Flex>
+    <AuthorizedPage>
+      <Box bg="blue.400" py="3rem">
+        <Container maxW="6xl" gap="3rem" display="flex" flexDirection="column">
+          <Flex gap="1rem" alignItems="center">
+            <Avatar size="md" name={team.name ?? "T"} {...(team.image_url && { src: team.image_url })} />
+            <Heading as="h1" color="#fff">
+              {team.name}
+            </Heading>
+          </Flex>
 
-        <SimpleGrid columns={{ base: 1, sm: 3 }} gap="1rem">
-          <Basic heading="Základní informace">
-            <Flex flexDirection="column" gap="0.5rem">
-              <Text>
-                Počet členů: <strong>8</strong>
-              </Text>
-              <Text>
-                Datum založení: <strong>20. 12. 2011</strong>
-              </Text>
-              <Text>
-                Počet vyhraných zápasů: <chakra.strong color="green.400">10</chakra.strong>
-              </Text>
-              <Text>
-                Počet prohraných zápasů: <chakra.strong color="red.400">0</chakra.strong>
-              </Text>
-            </Flex>
-          </Basic>
+          <SimpleGrid columns={{ base: 1, sm: 3 }} gap="1rem">
+            <Basic heading="Základní informace">
+              <Flex flexDirection="column" gap="0.5rem">
+                <Text>
+                  Počet členů: <strong>8</strong>
+                </Text>
+                <Text>
+                  Datum založení: <strong>20. 12. 2011</strong>
+                </Text>
+                <Text>
+                  Počet vyhraných zápasů: <chakra.strong color="green.400">10</chakra.strong>
+                </Text>
+                <Text>
+                  Počet prohraných zápasů: <chakra.strong color="red.400">0</chakra.strong>
+                </Text>
+              </Flex>
+            </Basic>
 
-          <SimpleGrid columns={1} gap="1rem">
-            <Basic heading="Typ týmu">Amatérský</Basic>
+            <SimpleGrid columns={1} gap="1rem">
+              <Basic heading="Typ týmu">Amatérský</Basic>
 
-            <Basic heading="Sport">
-              <Flex gap="0.5rem" alignItems="center">
-                <Image w="1rem" h="1rem" src="/static/images/hokey.png" alt="hokey-icon" />
-                <Text>Hokej</Text>
+              <Basic heading="Sport">
+                <Flex gap="0.5rem" alignItems="center">
+                  <Image w="1rem" h="1rem" src="/static/images/hokey.png" alt="hokey-icon" />
+                  <Text>Hokej</Text>
+                </Flex>
+              </Basic>
+            </SimpleGrid>
+
+            <Basic heading="Kontaktní osoba týmu">
+              <Flex flexDirection="column" gap="0.5rem">
+                <Flex flexDirection="row" alignItems="center" gap="1rem">
+                  <Avatar size="sm" name="Jan Novak" bg="blue.400" />
+                  <Text fontWeight={700}>Jan Novak</Text>
+                </Flex>
+                <Flex gap="1rem" alignItems="center">
+                  <Flex alignItems="center" justifyContent="center" w="8" h="8" bg="blue.400" borderRadius="50">
+                    <Icon as={PhoneIcon} color="#fff" />
+                  </Flex>
+                  <Text>+420123412435</Text>
+                </Flex>
+                <Flex gap="1rem" alignItems="center">
+                  <Flex alignItems="center" justifyContent="center" w="8" h="8" bg="blue.400" borderRadius="50">
+                    <Icon as={EmailIcon} color="#fff" />
+                  </Flex>
+                  <Text>jan.novak@seznam.cz</Text>
+                </Flex>
               </Flex>
             </Basic>
           </SimpleGrid>
+        </Container>
+      </Box>
 
-          <Basic heading="Kontaktní osoba týmu">
-            <Flex flexDirection="column" gap="0.5rem">
-              <Flex flexDirection="row" alignItems="center" gap="1rem">
-                <Avatar size="sm" name="Jan Novak" bg="blue.400" />
-                <Text fontWeight={700}>Jan Novak</Text>
-              </Flex>
-              <Flex gap="1rem" alignItems="center">
-                <Flex alignItems="center" justifyContent="center" w="8" h="8" bg="blue.400" borderRadius="50">
-                  <Icon as={PhoneIcon} color="#fff" />
-                </Flex>
-                <Text>+420123412435</Text>
-              </Flex>
-              <Flex gap="1rem" alignItems="center">
-                <Flex alignItems="center" justifyContent="center" w="8" h="8" bg="blue.400" borderRadius="50">
-                  <Icon as={EmailIcon} color="#fff" />
-                </Flex>
-                <Text>jan.novak@seznam.cz</Text>
-              </Flex>
-            </Flex>
-          </Basic>
-        </SimpleGrid>
-
-        <Basic heading="Sezóny">
+      <Container maxW="6xl" gap="3rem" display="flex" flexDirection="column" mt="6rem">
+        <Basic heading="Sezóny" withBackground>
           <Select value={option} onChange={(e) => setOption(e.target.value)}>
             {seasons.map((season) => {
               return (
@@ -174,7 +183,7 @@ const TeamDetailPage: NextPage<TeamDetailPageProps> = ({ team }) => {
           </Select>
         </Basic>
 
-        <Basic heading="Statistiky">
+        <Basic heading="Statistiky" withBackground>
           <DataTable
             columns={playersColumn}
             data={fakePlayersData.filter((data) => {
@@ -183,38 +192,20 @@ const TeamDetailPage: NextPage<TeamDetailPageProps> = ({ team }) => {
           />
         </Basic>
 
-        <Basic heading="Statistiky týmu" />
+        <Basic heading="Statistiky týmu" withBackground />
       </Container>
-    </Page>
+    </AuthorizedPage>
   );
 };
 
 export default TeamDetailPage;
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ params }: { params: ParsedUrlQuery }) {
   const { data } = await client.query({
-    query: gql`
-      query Teams {
-        team(id_team: 1) {
-          id_team
-          name
-          image_url
-          players {
-            firstName
-          }
-          invited_players {
-            firstName
-          }
-          admins {
-            firstName
-          }
-          team_meta_data {
-            key
-            value
-          }
-        }
-      }
-    `
+    query: TeamDetailDocument,
+    variables: {
+      id: Number(params.id)
+    }
   });
 
   return {

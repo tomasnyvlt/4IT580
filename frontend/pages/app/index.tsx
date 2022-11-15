@@ -3,17 +3,17 @@ import { NextPage } from "next";
 import { useContext } from "react";
 
 import { UserContext } from "components/contexts/UserContext";
-import Page from "components/layouts/Page";
+import AuthorizedPage from "components/layouts/AuthorizedPage";
 
 const IndexPage: NextPage = () => {
   const { user } = useContext(UserContext);
 
   return (
-    <Page>
+    <AuthorizedPage>
       <Container maxW="6xl">
-        <Heading as="h1">Hello {user?.firstName}</Heading>
+        <Heading as="h1">Hello {user?.user.firstName}</Heading>
       </Container>
-    </Page>
+    </AuthorizedPage>
   );
 };
 

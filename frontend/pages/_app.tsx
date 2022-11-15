@@ -6,7 +6,6 @@ import { setLocale } from "yup";
 
 import { EnhancedApolloProvider } from "apollo/client";
 import { AuthProvider } from "components/contexts/AuthContext";
-import { UserProvider } from "components/contexts/UserContext";
 // eslint-disable-next-line import/order
 import { csLocale } from "components/locales/cs";
 
@@ -25,11 +24,9 @@ const App: FC<AppProps> = ({ pageProps, Component }) => {
 
       <AuthProvider>
         <EnhancedApolloProvider>
-          <UserProvider>
-            <ChakraProvider theme={theme}>
-              <Component {...pageProps} />
-            </ChakraProvider>
-          </UserProvider>
+          <ChakraProvider theme={theme}>
+            <Component {...pageProps} />
+          </ChakraProvider>
         </EnhancedApolloProvider>
       </AuthProvider>
     </>

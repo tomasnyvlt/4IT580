@@ -13,18 +13,19 @@ type Query {
 
 type Mutation {
   _empty(nothing: String): String
+  testMail: String
   registerLogin(
     firstName: String!
     lastName: String!
-    userName: String!
     email: String!
     password: String!
-  ): LoginTokens!
+  ): String!
+  confirmRegistration(confirmationCode: String!): LoginTokens!
   addEventType(key: String!, name: String!): EventType!
   deleteEventType(id_event_type: Int!): String!
   updateEventType(id_event_type: Int!, name: String, key: String): EventType!
-  login(userName: String!, password: String!): LoginTokens!
-  logout(userId: Int!): String!
+  login(email: String!, password: String!): LoginTokens!
+  logout: String!
   refresh(refreshToken: String!): String!
   addTeam(name: String!, image_url: String): Team!
   deleteTeam(id_team: Int!): String!
@@ -50,7 +51,6 @@ type User {
   id: Int!
   firstName: String!
   lastName: String!
-  userName: String!
   email: String!
   timeRegistered: String!
   timeLastLogin: String!

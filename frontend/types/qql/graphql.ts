@@ -39,6 +39,7 @@ export type Mutation = {
   addPlayersToTeams: Scalars['String'];
   addTeam: Team;
   addTeamMetaData: Scalars['String'];
+  confirmRegistration: LoginTokens;
   deleteEventType: Scalars['String'];
   deletePlayerFromTeam: Scalars['String'];
   deleteTeam: Scalars['String'];
@@ -46,7 +47,8 @@ export type Mutation = {
   login: LoginTokens;
   logout: Scalars['String'];
   refresh: Scalars['String'];
-  registerLogin: LoginTokens;
+  registerLogin: Scalars['String'];
+  testMail?: Maybe<Scalars['String']>;
   updateEventType: EventType;
   updatePlayerInTeamState: Team_Has_Players;
   updateTeam: Team;
@@ -83,6 +85,11 @@ export type MutationAddTeamMetaDataArgs = {
 };
 
 
+export type MutationConfirmRegistrationArgs = {
+  confirmationCode: Scalars['String'];
+};
+
+
 export type MutationDeleteEventTypeArgs = {
   id_event_type: Scalars['Int'];
 };
@@ -105,13 +112,8 @@ export type MutationDeleteTeamMetaDataArgs = {
 
 
 export type MutationLoginArgs = {
+  email: Scalars['String'];
   password: Scalars['String'];
-  userName: Scalars['String'];
-};
-
-
-export type MutationLogoutArgs = {
-  userId: Scalars['Int'];
 };
 
 
@@ -125,7 +127,6 @@ export type MutationRegisterLoginArgs = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   password: Scalars['String'];
-  userName: Scalars['String'];
 };
 
 
@@ -231,7 +232,6 @@ export type User = {
   teams: Array<Team>;
   timeLastLogin: Scalars['String'];
   timeRegistered: Scalars['String'];
-  userName: Scalars['String'];
 };
 
 export enum Team_Has_Players_State {

@@ -1,0 +1,20 @@
+query TeamDetail($id: Int!) {
+  team(id_team: $id) {
+    id_team
+    name
+    image_url
+    players {
+      firstName
+    }
+    invited_players {
+      firstName
+    }
+    admins {
+      firstName
+    }
+    team_meta_data {
+      key
+      value
+    }
+  }
+}

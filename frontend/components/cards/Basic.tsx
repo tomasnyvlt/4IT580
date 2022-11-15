@@ -3,20 +3,30 @@ import { FC, PropsWithChildren } from "react";
 
 interface BasicCardProps {
   heading?: string;
+  withBackground?: boolean;
 }
 
-const BasicCard: FC<PropsWithChildren<BasicCardProps>> = ({ heading, children }) => {
+const BasicCard: FC<PropsWithChildren<BasicCardProps>> = ({ heading, withBackground, children }) => {
   return (
     <Flex
       boxShadow="basic"
       flexDirection="column"
       borderRadius="0.5rem"
-      border="1px solid"
+      background="#fff"
+      border={withBackground ? "1px solid" : "0"}
       borderColor="blue.400"
-      // _hover={{ backgroundColor: "blue.400", color: "white" }}
+      overflow="hidden"
     >
       {heading && (
-        <Text as="h3" borderBottom="1px solid" bg="blue.400" p="1rem" size="md" fontWeight={700} color="#fff">
+        <Text
+          as="h3"
+          borderBottom="1px solid"
+          p="1rem"
+          size="md"
+          fontWeight={700}
+          color={withBackground ? "#fff" : "blue.400"}
+          bg={withBackground ? "blue.400" : "#fff"}
+        >
           {heading}
         </Text>
       )}

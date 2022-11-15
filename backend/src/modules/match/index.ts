@@ -10,6 +10,7 @@ const resolvers: IResolvers<any, Context> = {
   Match: {
     teams: matchSpecific.matchTeams,
     match_editors: matchSpecific.matchEditors,
+    events: matchSpecific.matchEvents
   },
 };
 

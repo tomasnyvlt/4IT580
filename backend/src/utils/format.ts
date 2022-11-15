@@ -1,4 +1,4 @@
-import { user } from "@prisma/client";
+import { event, user } from "@prisma/client";
 
 export const formatPlayers = (players: Array<user>) => {
   return players.map((result) => {
@@ -16,3 +16,14 @@ export const formatPlayer = (player: user) => {
     timeLastLogin: player.time_last_login?.toISOString(),
   };
 };
+
+export const formatEvent = (event:event) => {
+  return {
+    ...event,
+    timeHappened: event.time_happened
+  }
+}
+
+export const formatEvents = (events:event[]) => {
+  return events.map(event => formatEvent(event));
+}

@@ -9,17 +9,18 @@
 
 Create `.env.local` file (DB user, password, ...)
 ```
-PORT=
-JWT_SECRET=
-DB_HOST=
-DB_NAME=
-DB_USER=
-DB_PASSWORD=
-DB_PORT=
-
-DATABASE_URL=
+JWT_SECRET= some random hash
+REFRESH_SECRET= some random hase
+PORT= port of the backend app
+FRONTEND_URL= URL of frontend app
+MAIL_HOST= some SMTP server
+MAIL_USER= user for SMTP server
+MAIL_PASSWORD= password for SMTP server
+DATABASE_URL= connection string in this format "mysql://USER:PASSWORD@URL:PORT/DATABASE_NAME"
 ```
 Database url should be in format like described here [https://www.connectionstrings.com/mysql/](https://www.connectionstrings.com/mysql/)
+
+For database work it is need to have the same data in `.env` file aswell but for running the app it is not needed.
 ## Install Dependencies
 
 ```bash
@@ -31,20 +32,14 @@ yarn install
 Runs the app in the development mode.\
 Open [http://localhost:4000](http://localhost:4000) to view it in the browser.
 
-## Run Production
-
-```bash
-yarn start
-```
-
 ## Build Production
 
 ```bash
 yarn build
 ```
 
-### Build Production and Watch for Changes
+## Run Production
 
 ```bash
-yarn build:watch
+yarn start
 ```

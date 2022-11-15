@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import {MAIL_HOST, MAIL_USER, MAIL_PASSWORD} from "../config/variables.js"
+import {MAIL_HOST, MAIL_USER, MAIL_PASSWORD, FRONTEND_URL} from "../config/variables.js"
 
 const FALLBACK_EMAIL = "noreply@sportify.com"
 
@@ -43,6 +43,8 @@ export const createRegistrationEmailContent = (firstName: string, lastName: stri
     <br />
     <p>The confirmation code you are looking for is right here:</p>
     <h2>${confirmationCode}</h2>
+    <br/>
+    <p>Or you can confirm your registration by clicking <a href="${FRONTEND_URL}activation?confirmationCode=${confirmationCode}" target="_blank">on this link.</a></p>
     <br/>
     <p>If you experience any issues logging into your account, reach out to us at support@sportify.com.</p>
     <br/>

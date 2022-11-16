@@ -1,5 +1,5 @@
 import { gql } from "apollo-server-core";
-
+    //TODO Match players
 export const typeDef = gql`
   enum match_state {
     pending
@@ -20,6 +20,12 @@ export const typeDef = gql`
     events(teamId: Int!): [Event]!
   }
 
+  input AddMatchPlayersType {
+    id_user: Int!
+    match_game_name: String
+    match_role: String
+  }
+
   extend type Query {
     matches: [Match!]!
     match(id_match: Int!): Match!
@@ -27,6 +33,7 @@ export const typeDef = gql`
 
   extend type Mutation {
     addMatch(time_start: String!, state: match_state!, id_league: Int!): Match!
+    addMatchPlayers(id_match: Int!, players:[AddMatchPlayersType!]!): String!
     deleteMatch(id_match: Int!): String!
     updateMatch(id_match: Int!, state: match_state, id_league: Int): Match!
   }

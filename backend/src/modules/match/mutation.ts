@@ -1,5 +1,6 @@
 import { GQLSuccess } from "../../utils/return_statements/success.js";
 import { generateHashOfLength } from "../../libs/token.js";
+import { GQLError } from "../../utils/return_statements/errors.js";
 const crypto = require("crypto");
 
 type addMatchArgs = {
@@ -55,5 +56,34 @@ export const updateMatch = async (
       id_league: args?.id_league,
     },
   });
-  return updateMatch
+  return updateMatch;
+};
+
+type addMatchPlayersArgs = {
+  id_match: number;
+  players: Array<{
+    id_user: number;
+    match_game_name?: string;
+    match_role?: string;
+  }>;
+};
+export const addMatchPlayers = async (
+  _: void,
+  args: addMatchPlayersArgs,
+  context: Context
+) => {
+  const addMatchPlayers = await context.prisma.match_players.createMany({
+    data: args.players.map((player) => {
+      return {
+        id_match: args.id_match,
+        id_player: player.id_user,
+        match_game_name: player.match_game_name,
+        match_role: player.match_role,
+      };
+    }),
+  });
+
+  if (addMatchPlayers.count > 0) {
+    return new GQLSuccess().rowsCreated(addMatchPlayers.count);
+  } else return new GQLError().noNewRows();
 };

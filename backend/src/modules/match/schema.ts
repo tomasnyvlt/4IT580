@@ -18,6 +18,20 @@ export const typeDef = gql`
     teams: [Team]
     match_editors: [Match_editor]
     events(teamId: Int!): [Event]!
+    match_players: [MatchPlayers!]
+  }
+
+  type MatchPlayers {
+    id: Int!
+    firstName: String!
+    lastName: String!
+    email: String!
+    timeRegistered: String!
+    timeLastLogin: String!
+    teams: [Team!]!
+    events(teamId: Int!, matchId: Int, eventKey: String): [Event]!
+    match_game_name: String
+    match_role: [String]
   }
 
   input AddMatchPlayersType {

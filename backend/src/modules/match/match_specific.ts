@@ -1,5 +1,10 @@
 import { event } from "@prisma/client";
-import { formatEvent, formatEvents } from "../../utils/format";
+import {
+  formatEvent,
+  formatEvents,
+  formatPlayer,
+  formatPlayers,
+} from "../../utils/format";
 import { GQLError } from "../../utils/return_statements/errors";
 
 export const matchTeams = async (
@@ -32,16 +37,19 @@ export const matchEditors = async (
   return matchEditors.slice(0, 20);
 };
 
-
 type matchEventsArgs = {
-  teamId: number
+  teamId: number;
 };
-export const matchEvents = async(parent: { id_match: number}, args:matchEventsArgs, context: Context) => {
+export const matchEvents = async (
+  parent: { id_match: number },
+  args: matchEventsArgs,
+  context: Context
+) => {
   const prisma = context.prisma;
-  console.log("args.teamId", args.teamId)
+  console.log("args.teamId", args.teamId);
   const match = await prisma.match.findFirst({
     where: {
-      id_match: parent.id_match
+      id_match: parent.id_match,
     },
     include: {
       event: {
@@ -52,29 +60,52 @@ export const matchEvents = async(parent: { id_match: number}, args:matchEventsAr
                 where: {
                   id_team: args.teamId,
                   AND: {
-                    OR: [
-                      { state: "admin" },
-                      { state: "joined" }
-                    ]
-                  }
-                }
-              }
-            }
-          }
+                    OR: [{ state: "admin" }, { state: "joined" }],
+                  },
+                },
+              },
+            },
+          },
         },
         orderBy: {
-          time_happened: 'asc'
-        }
-      }
+          time_happened: "asc",
+        },
+      },
     },
   });
 
-
-
-  if(match == null) throw new GQLError().noMatches();
+  if (match == null) throw new GQLError().noMatches();
   // Filter out all the user that aren't in the team specified in query.
   const events = match.event.filter((event) => {
     return event.user.team_has_players.length != 0;
   });
   return formatEvents(events);
-}
+};
+
+export const matchPlayers = async (
+  parent: { id_match: number },
+  _: void,
+  context: Context
+) => {
+  const matchPlayers = await context.prisma.user.findMany({
+    where: {
+      match_players: {
+        some: { id_match: parent.id_match },
+      },
+    },
+    include: {
+      match_players: {
+        where: { id_match: parent.id_match },
+      },
+    },
+  });
+
+  return matchPlayers.map((player) => {
+    const formatted = formatPlayer(player);
+    return {
+      ...formatted,
+      match_game_name: player.match_players[0].match_game_name,
+      match_role: new Set(player.match_players.map((row) => row.match_role)),
+    };
+  });
+};

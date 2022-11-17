@@ -91,6 +91,7 @@ model match {
   state          match_state
   edit_hash      String           @db.VarChar(255)
   id_league      Int              @db.UnsignedInt
+  season         seasons          @default(s2023)
   league         league           @relation(fields: [id_league], references: [id_league], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_league1")
   event          event[]
   match_editor   match_editor[]
@@ -222,4 +223,18 @@ enum match_state {
   accepted
   running
   done
+}
+
+enum seasons {
+  s2013
+  s2014
+  s2015
+  s2016
+  s2017
+  s2018
+  s2019
+  s2020
+  s2021
+  s2022
+  s2023
 }

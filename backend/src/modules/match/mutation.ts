@@ -1,12 +1,14 @@
 import { GQLSuccess } from "../../utils/return_statements/success.js";
 import { generateHashOfLength } from "../../libs/token.js";
 import { GQLError } from "../../utils/return_statements/errors.js";
+import { match_state, seasons } from "@prisma/client";
 const crypto = require("crypto");
 
 type addMatchArgs = {
   time_start: string;
-  state: "pending" | "accepted" | "running" | "done";
+  state: match_state;
   id_league: number;
+  season: seasons;
 };
 export const addMatch = async (
   _: void,
@@ -19,6 +21,7 @@ export const addMatch = async (
       time_start: new Date(args.time_start),
       state: args.state,
       id_league: args.id_league,
+      season: args?.season,
     },
   });
   return addMatch;
@@ -39,8 +42,9 @@ export const deleteMatch = async (
 
 type updateMatchArgs = {
   id_match: number;
-  state: "pending" | "accepted" | "running" | "done" | undefined;
-  id_league: number | undefined;
+  state?: match_state;
+  id_league?: number;
+  season: seasons;
 };
 export const updateMatch = async (
   _: void,
@@ -54,6 +58,7 @@ export const updateMatch = async (
     data: {
       state: args?.state,
       id_league: args?.id_league,
+      season: args?.season,
     },
   });
   return updateMatch;

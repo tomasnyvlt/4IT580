@@ -1,11 +1,24 @@
 import { gql } from "apollo-server-core";
-    //TODO Match players
+
 export const typeDef = gql`
   enum match_state {
     pending
     accepted
     running
     done
+  }
+  enum seasons {
+    s2013
+    s2014
+    s2015
+    s2016
+    s2017
+    s2018
+    s2019
+    s2020
+    s2021
+    s2022
+    s2023
   }
 
   type Match {
@@ -19,6 +32,7 @@ export const typeDef = gql`
     match_editors: [Match_editor]
     events(teamId: Int!): [Event]!
     match_players: [MatchPlayers!]
+    season: seasons!
   }
 
   type MatchPlayers {
@@ -43,12 +57,23 @@ export const typeDef = gql`
   extend type Query {
     matches: [Match!]!
     match(id_match: Int!): Match!
+    matchesBySeason(season: seasons!): [Match!]!
   }
 
   extend type Mutation {
-    addMatch(time_start: String!, state: match_state!, id_league: Int!): Match!
-    addMatchPlayers(id_match: Int!, players:[AddMatchPlayersType!]!): String!
+    addMatch(
+      time_start: String!
+      state: match_state!
+      id_league: Int!
+      season: seasons
+    ): Match!
+    addMatchPlayers(id_match: Int!, players: [AddMatchPlayersType!]!): String!
     deleteMatch(id_match: Int!): String!
-    updateMatch(id_match: Int!, state: match_state, id_league: Int): Match!
+    updateMatch(
+      id_match: Int!
+      state: match_state
+      id_league: Int
+      season: seasons
+    ): Match!
   }
 `;

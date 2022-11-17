@@ -1,3 +1,4 @@
+import { seasons } from "@prisma/client";
 import { GQLError } from "../../utils/return_statements/errors";
 
 export const matches = async (_: void, __: void, context: Context) => {
@@ -19,4 +20,18 @@ export const match = async (
     },
   });
   return match;
+};
+
+export const matchesBySeason = async (
+  _: void,
+  args: { season: seasons },
+  context: Context
+) => {
+  const matchesBySeason = await context.prisma.match.findMany({
+    where: {
+      season: args.season,
+    },
+  });
+  if (matchesBySeason.length < 1) return new GQLError().noMatches();
+  return matchesBySeason.slice(0, 20);
 };

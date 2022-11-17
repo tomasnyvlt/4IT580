@@ -1,11 +1,14 @@
 import { GQLSuccess } from "../../utils/return_statements/success.js";
 import { generateHashOfLength } from "../../libs/token.js";
+import { GQLError } from "../../utils/return_statements/errors.js";
+import { match_state, seasons } from "@prisma/client";
 const crypto = require("crypto");
 
 type addMatchArgs = {
   time_start: string;
-  state: "pending" | "accepted" | "running" | "done";
+  state: match_state;
   id_league: number;
+  season: seasons;
 };
 export const addMatch = async (
   _: void,
@@ -18,6 +21,7 @@ export const addMatch = async (
       time_start: new Date(args.time_start),
       state: args.state,
       id_league: args.id_league,
+      season: args?.season,
     },
   });
   return addMatch;
@@ -38,8 +42,9 @@ export const deleteMatch = async (
 
 type updateMatchArgs = {
   id_match: number;
-  state: "pending" | "accepted" | "running" | "done" | undefined;
-  id_league: number | undefined;
+  state?: match_state;
+  id_league?: number;
+  season: seasons;
 };
 export const updateMatch = async (
   _: void,
@@ -53,7 +58,37 @@ export const updateMatch = async (
     data: {
       state: args?.state,
       id_league: args?.id_league,
+      season: args?.season,
     },
   });
-  return updateMatch
+  return updateMatch;
+};
+
+type addMatchPlayersArgs = {
+  id_match: number;
+  players: Array<{
+    id_user: number;
+    match_game_name?: string;
+    match_role?: string;
+  }>;
+};
+export const addMatchPlayers = async (
+  _: void,
+  args: addMatchPlayersArgs,
+  context: Context
+) => {
+  const addMatchPlayers = await context.prisma.match_players.createMany({
+    data: args.players.map((player) => {
+      return {
+        id_match: args.id_match,
+        id_player: player.id_user,
+        match_game_name: player.match_game_name,
+        match_role: player.match_role,
+      };
+    }),
+  });
+
+  if (addMatchPlayers.count > 0) {
+    return new GQLSuccess().rowsCreated(addMatchPlayers.count);
+  } else return new GQLError().noNewRows();
 };

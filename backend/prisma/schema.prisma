@@ -8,13 +8,13 @@ datasource db {
 }
 
 model event {
-  id_event         Int        @default(autoincrement()) @db.UnsignedInt @unique
+  id_event         Int        @unique @default(autoincrement()) @db.UnsignedInt
   time_happened    String?    @db.VarChar(6)
   id_match         Int        @db.UnsignedInt
   id_event_type    Int        @db.UnsignedInt
   user_id_user     Int        @db.UnsignedInt
-  id_counter_event Int?        @db.UnsignedInt
-  event            event?      @relation("eventToevent", fields: [id_counter_event], references: [id_event], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_event1")
+  id_counter_event Int?       @db.UnsignedInt
+  event            event?     @relation("eventToevent", fields: [id_counter_event], references: [id_event], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_event1")
   event_type       event_type @relation(fields: [id_event_type], references: [id_event_type], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_event_type1")
   match            match      @relation(fields: [id_match], references: [id_match], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_match1")
   user             user       @relation(fields: [user_id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_event_user1")
@@ -91,10 +91,12 @@ model match {
   state          match_state
   edit_hash      String           @db.VarChar(255)
   id_league      Int              @db.UnsignedInt
+  season         seasons          @default(s2023)
   league         league           @relation(fields: [id_league], references: [id_league], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_league1")
   event          event[]
   match_editor   match_editor[]
   match_has_team match_has_team[]
+  match_players  match_players[]
 
   @@index([id_league], map: "fk_match_league1")
 }
@@ -122,6 +124,18 @@ model match_has_team {
 
   @@id([id_team, id_match])
   @@index([id_match], map: "fk_team_has_match_match1")
+}
+
+model match_players {
+  id_match_players Int     @id @default(autoincrement()) @db.UnsignedInt
+  match_game_name  String? @db.VarChar(255)
+  match_role       String? @db.VarChar(255) //String nebo enum?
+  match            match?  @relation(fields: [id_match], references: [id_match], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_players_match1")
+  user             user    @relation(fields: [id_player], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_players_user1")
+  id_player        Int     @db.UnsignedInt
+  id_match         Int     @db.UnsignedInt
+
+  @@index([id_match], map: "fk_match_players_match1")
 }
 
 model refresh_token {
@@ -179,14 +193,15 @@ model user {
   match_editor             match_editor[]
   refresh_token            refresh_token[]
   team_has_players         team_has_players[]
-  registration_tokens      registration_token[] 
+  registration_tokens      registration_token[]
+  match_players            match_players[]
 }
 
 model registration_token {
-  token                   String                      @id @unique
-  valid_until             DateTime                    @db.DateTime(0)
-  id_user                 Int                         @db.UnsignedInt
-  user                    user                        @relation(fields: [id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_regtoken_user")
+  token       String   @id @unique
+  valid_until DateTime @db.DateTime(0)
+  id_user     Int      @db.UnsignedInt
+  user        user     @relation(fields: [id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_regtoken_user")
 
   @@index([id_user], map: "fk_regtoken_user")
 }
@@ -208,4 +223,18 @@ enum match_state {
   accepted
   running
   done
+}
+
+enum seasons {
+  s2013
+  s2014
+  s2015
+  s2016
+  s2017
+  s2018
+  s2019
+  s2020
+  s2021
+  s2022
+  s2023
 }

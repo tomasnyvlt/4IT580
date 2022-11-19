@@ -284,7 +284,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', firstName: string, lastName: string, email: string, timeRegistered: string, teams: Array<{ __typename?: 'Team', id_team?: number | null, name?: string | null, image_url?: string | null }> } };
+export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', firstName: string, lastName: string, email: string, timeRegistered: string, teams: Array<{ __typename?: 'Team', id_team?: number | null, name?: string | null, image_url?: string | null, players: Array<{ __typename?: 'User', firstName: string, lastName: string, id: number }> }> } };
 
 
 export const ConfirmRegDocument = gql`
@@ -486,6 +486,11 @@ export const UserDocument = gql`
       id_team
       name
       image_url
+      players {
+        firstName
+        lastName
+        id
+      }
     }
   }
 }

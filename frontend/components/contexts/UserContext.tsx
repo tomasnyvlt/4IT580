@@ -1,8 +1,10 @@
-import jwtDecode, { JwtPayload } from "jwt-decode";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 
 import { AuthContext } from "components/contexts/AuthContext";
-import { UserQuery, useUserQuery } from "types/generated-types";
+import { useQuery } from "components/hooks/useQuery";
+import { USER_QUERY } from "components/queries/user";
+import { User as UserProps } from "components/types/graphql";
+import jwtDecode, { JwtPayload } from "jwt-decode";
 
 interface UserContextProps {
   user?: UserQuery | undefined;

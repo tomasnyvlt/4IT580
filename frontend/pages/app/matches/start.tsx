@@ -8,7 +8,7 @@ const StartMatchPage: NextPage = () => {
     <AuthorizedPage>
       <Container maxW="6xl" gap="3rem">
         <Box py="3rem">
-          <Heading textAlign="center">zapas</Heading>
+          <Heading textAlign="center">Zapas</Heading>
           <WatchPage />
         </Box>
       </Container>

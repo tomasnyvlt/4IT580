@@ -28,6 +28,11 @@ export const typeDef = gql`
     s2023
   }
 
+  type MatchScore {
+    name: String!
+    points: Int!
+  }
+
   type Match {
     id_match: Int!
     time_created: String
@@ -40,6 +45,7 @@ export const typeDef = gql`
     events(teamId: Int!): [Event]!
     match_players: [MatchPlayers!]
     season: seasons!
+    score: [MatchScore]
   }
 
   type MatchPlayers {
@@ -77,7 +83,7 @@ export const typeDef = gql`
     match_team_name: String
     players: [MatchTeamPlayerType!]!
   }
-  input MatchTeamPlayerType{
+  input MatchTeamPlayerType {
     id_player: Int
     role: String
   }
@@ -110,9 +116,14 @@ export const typeDef = gql`
       id_match: Int!
       state: match_has_team_state!
     ): String!
-    deleteMatchTeams(
-      pairs: [DeleteMatchTeamsPairsType!]!
-    ): String!
-    createMatch(time_start: String!, state: match_state, id_league: Int!, season: seasons!, teamStructure1: MatchTeamType, teamStructure2: MatchTeamType): Match!
+    deleteMatchTeams(pairs: [DeleteMatchTeamsPairsType!]!): String!
+    createMatch(
+      time_start: String!
+      state: match_state
+      id_league: Int!
+      season: seasons!
+      teamStructure1: MatchTeamType
+      teamStructure2: MatchTeamType
+    ): Match!
   }
 `;

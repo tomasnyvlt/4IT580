@@ -11,7 +11,8 @@ const resolvers: IResolvers<any, Context> = {
     teams: matchSpecific.matchTeams,
     match_editors: matchSpecific.matchEditors,
     events: matchSpecific.matchEvents,
-    match_players: matchSpecific.matchPlayers
+    match_players: matchSpecific.matchPlayers,
+    score: matchSpecific.matchScore,
   },
 };
 

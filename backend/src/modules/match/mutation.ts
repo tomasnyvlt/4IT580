@@ -1,7 +1,7 @@
 import { GQLSuccess } from "../../utils/return_statements/success.js";
 import { generateHashOfLength } from "../../libs/token.js";
 import { GQLError } from "../../utils/return_statements/errors.js";
-import { match_has_team_state, match_state, seasons } from "@prisma/client";
+import { match_has_team_state, match_state, PrismaClient, seasons } from "@prisma/client";
 const crypto = require("crypto");
 
 type addMatchArgs = {
@@ -164,3 +164,65 @@ export const addMatchPlayers = async (
     return new GQLSuccess().rowsCreated(addMatchPlayers.count);
   } else return new GQLError().noNewRows();
 };
+
+type CreateMatchArgs = {
+  time_start: string,
+  state?: match_state,
+  id_league: number,
+  season: seasons,
+  teamStructure1: CreateMatchTeamStructure,
+  teamStructure2: CreateMatchTeamStructure,
+}
+type CreateMatchTeamStructure = {
+  id_team: number,
+  match_team_name: string,
+  players: Array<CreateMatchPlayerStructure>
+}
+type CreateMatchPlayerStructure = {
+  id_player: number,
+  role: string
+}
+export const createMatch = async (_: void, args: CreateMatchArgs, context: Context) => {
+  const prisma = context.prisma;
+  const match = await prisma.$transaction(async (tx) => {
+    const match = await tx.match.create({
+      data: {
+        time_start: new Date(args.time_start),
+        state: args.state ?? "pending",
+        season: args.season,
+        edit_hash: generateHashOfLength(32)
+      }
+    });
+    const matchTeamRows = await tx.match_has_team.createMany({
+      data: [
+        { id_match: match.id_match, id_team: args.teamStructure1.id_team, state: "accepted"},
+        { id_match: match.id_match, id_team: args.teamStructure2.id_team, state: "accepted"},
+      ]
+    });
+    const matchPlayerRows1 = await tx.match_players.createMany({
+      data: args.teamStructure1.players.map((player) => {
+        return {
+          id_player: player.id_player,
+          id_match: match.id_match,
+          match_game_name: args.teamStructure1.match_team_name,
+          match_role: player.role,
+          id_team: args.teamStructure1.id_team
+        }
+      })
+    });
+    const matchPlayerRows2 = await tx.match_players.createMany({
+      data: args.teamStructure2.players.map((player) => {
+        return {
+          id_player: player.id_player,
+          id_match: match.id_match,
+          match_game_name: args.teamStructure2.match_team_name,
+          match_role: player.role,
+          id_team: args.teamStructure2.id_team
+        }
+      })
+    });
+
+    return match;
+  });
+  return match;
+}

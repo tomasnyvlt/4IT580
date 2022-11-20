@@ -183,10 +183,7 @@ const CreateMatchForm: FC<CreateMatcgFormProps> = ({ match }) => {
                         </option>
                       ))}
                     </InputField>
-                    {selectedTeam && (
-                      // @ts-ignore
-                      <DataTable columns={playersColumn} data={userTeamPlayer} />
-                    )}
+                    {selectedTeam && <DataTable columns={playersColumn} data={userTeamPlayer} />}
                   </>
                 );
               })}

@@ -227,31 +227,24 @@ const TeamDetailPage: NextPage<TeamDetailPageProps> = ({ team }) => {
           </Select>
         </Basic>
 
-        {/* TODO: FIX TS IGNORE */}
         {team.matches?.filter((match) => match?.season === option)?.length! > 0 ? (
           <Basic heading="Seznam zápasů" withBackground>
-            {
-              // @ts-ignore
-              <DataTable
-                columns={matchesColumns}
-                data={team.matches?.filter((match) => match && match?.season === option) as Match[]}
-              />
-            }
+            <DataTable
+              columns={matchesColumns}
+              data={team.matches?.filter((match) => match && match?.season === option) as Match[]}
+            />
           </Basic>
         ) : (
           <Text>Pro tuto sezónu nejsou žádné zápasy.</Text>
         )}
 
         <Basic heading="Statistiky" withBackground>
-          {
-            // @ts-ignore
-            <DataTable
-              columns={playersColumn}
-              data={fakePlayersData.filter((data) => {
-                return option === " " ? data : data.season === option;
-              })}
-            />
-          }
+          <DataTable
+            columns={playersColumn}
+            data={fakePlayersData.filter((data) => {
+              return option === " " ? data : data.season === option;
+            })}
+          />
         </Basic>
       </Container>
     </AuthorizedPage>

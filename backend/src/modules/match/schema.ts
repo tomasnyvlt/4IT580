@@ -80,7 +80,7 @@ export const typeDef = gql`
   extend type Mutation {
     addMatch(
       time_start: String
-      state: match_state!
+      state: match_state
       id_league: Int
       season: seasons
     ): Match!

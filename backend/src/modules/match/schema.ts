@@ -7,6 +7,13 @@ export const typeDef = gql`
     running
     done
   }
+
+  enum match_has_team_state {
+    invited
+    accepted
+    declined
+  }
+
   enum seasons {
     s2013
     s2014
@@ -54,6 +61,16 @@ export const typeDef = gql`
     match_role: String
   }
 
+  input AddMatchTeamsType {
+    id_team: Int
+    state: match_has_team_state
+  }
+
+  input DeleteMatchTeamsPairsType {
+    id_team: Int
+    id_match: Int
+  }
+
   extend type Query {
     matches: [Match!]!
     match(id_match: Int!): Match!
@@ -67,6 +84,7 @@ export const typeDef = gql`
       id_league: Int!
       season: seasons
     ): Match!
+    addMatchTeams(id_match: Int!, teams: [AddMatchTeamsType!]!): String!
     addMatchPlayers(id_match: Int!, players: [AddMatchPlayersType!]!): String!
     deleteMatch(id_match: Int!): String!
     updateMatch(
@@ -75,5 +93,13 @@ export const typeDef = gql`
       id_league: Int
       season: seasons
     ): Match!
+    updateMatchTeamsState(
+      id_team: Int!
+      id_match: Int!
+      state: match_has_team_state!
+    ): String!
+    deleteMatchTeams(
+      pairs: [DeleteMatchTeamsPairsType!]!
+    ): String!
   }
 `;

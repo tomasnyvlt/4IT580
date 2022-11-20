@@ -1,7 +1,7 @@
 import { GQLSuccess } from "../../utils/return_statements/success.js";
 import { generateHashOfLength } from "../../libs/token.js";
 import { GQLError } from "../../utils/return_statements/errors.js";
-import { match_state, seasons } from "@prisma/client";
+import { match_has_team_state, match_state, seasons } from "@prisma/client";
 const crypto = require("crypto");
 
 type addMatchArgs = {
@@ -62,6 +62,74 @@ export const updateMatch = async (
     },
   });
   return updateMatch;
+};
+
+type addMatchTeamsArgs = {
+  id_match: number;
+  teams: Array<{
+    id_team: number;
+    state: match_has_team_state;
+  }>;
+};
+export const addMatchTeams = async (
+  _: void,
+  args: addMatchTeamsArgs,
+  context: Context
+) => {
+  const addMatchTeams = await context.prisma.match_has_team.createMany({
+    data: args.teams.map((team) => {
+      return {
+        id_match: args.id_match,
+        id_team: team.id_team,
+        state: team.state,
+      };
+    }),
+  });
+  return new GQLSuccess().rowsCreated(addMatchTeams.count);
+};
+
+export const updateMatchTeamsState = async (
+  _: void,
+  args: { id_team: number; id_match: number; state: match_has_team_state },
+  context: Context
+) => {
+  const updateMatchTeamsState = await context.prisma.match_has_team.update({
+    where: {
+      id_team_id_match: {
+        id_match: args.id_match,
+        id_team: args.id_team,
+      },
+    },
+    data: {
+      state: args.state,
+    },
+  });
+  return new GQLSuccess().success();
+};
+
+type deleteMatchTeamsArgs = {
+  pairs: Array<{
+    id_team: number;
+    id_match: number;
+  }>;
+};
+export const deleteMatchTeams = async (
+  _: void,
+  args: deleteMatchTeamsArgs,
+  context: Context
+) => {
+  const id_teamArr = args.pairs.map((p) => p.id_team);
+  const id_matchArr = args.pairs.map((p) => p.id_match);
+
+  const deleteMatchTeams = await context.prisma.match_has_team.deleteMany({
+    where: {
+      id_match: { in: id_matchArr },
+      AND: {
+        id_team: { in: id_teamArr },
+      },
+    },
+  });
+  return new GQLSuccess().rowsDeleted(deleteMatchTeams.count);
 };
 
 type addMatchPlayersArgs = {

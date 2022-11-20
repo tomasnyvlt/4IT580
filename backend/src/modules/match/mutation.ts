@@ -5,9 +5,9 @@ import { match_has_team_state, match_state, seasons } from "@prisma/client";
 const crypto = require("crypto");
 
 type addMatchArgs = {
-  time_start: string;
+  time_start?: string;
   state: match_state;
-  id_league: number;
+  id_league?: number;
   season: seasons;
 };
 export const addMatch = async (
@@ -18,9 +18,9 @@ export const addMatch = async (
   const addMatch = await context.prisma.match.create({
     data: {
       edit_hash: generateHashOfLength(32),
-      time_start: new Date(args.time_start),
+      time_start: args.time_start? new Date(args.time_start): null,
       state: args.state,
-      id_league: args.id_league,
+      id_league: args?.id_league,
       season: args?.season,
     },
   });
@@ -45,6 +45,7 @@ type updateMatchArgs = {
   state?: match_state;
   id_league?: number;
   season: seasons;
+  time_start?: string;
 };
 export const updateMatch = async (
   _: void,
@@ -59,6 +60,7 @@ export const updateMatch = async (
       state: args?.state,
       id_league: args?.id_league,
       season: args?.season,
+      time_start: args?.time_start
     },
   });
   return updateMatch;

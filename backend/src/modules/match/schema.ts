@@ -31,10 +31,10 @@ export const typeDef = gql`
   type Match {
     id_match: Int!
     time_created: String
-    time_start: String!
+    time_start: String
     state: match_state!
     edit_hash: String!
-    id_league: Int!
+    id_league: Int
     teams: [Team]
     match_editors: [Match_editor]
     events(teamId: Int!): [Event]!
@@ -79,9 +79,9 @@ export const typeDef = gql`
 
   extend type Mutation {
     addMatch(
-      time_start: String!
+      time_start: String
       state: match_state!
-      id_league: Int!
+      id_league: Int
       season: seasons
     ): Match!
     addMatchTeams(id_match: Int!, teams: [AddMatchTeamsType!]!): String!
@@ -92,6 +92,7 @@ export const typeDef = gql`
       state: match_state
       id_league: Int
       season: seasons
+      time_start: String
     ): Match!
     updateMatchTeamsState(
       id_team: Int!

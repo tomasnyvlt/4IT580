@@ -87,12 +87,12 @@ model lost_password {
 model match {
   id_match       Int              @id @default(autoincrement()) @db.UnsignedInt
   time_created   DateTime?        @default(now()) @db.DateTime(0)
-  time_start     DateTime         @db.DateTime(0)
+  time_start     DateTime?        @db.DateTime(0)
   state          match_state
   edit_hash      String           @db.VarChar(255)
-  id_league      Int              @db.UnsignedInt
+  id_league      Int?             @db.UnsignedInt
   season         seasons          @default(s2023)
-  league         league           @relation(fields: [id_league], references: [id_league], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_league1")
+  league         league?          @relation(fields: [id_league], references: [id_league], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_league1")
   event          event[]
   match_editor   match_editor[]
   match_has_team match_has_team[]

@@ -59,6 +59,7 @@ export const typeDef = gql`
     id_user: Int!
     match_game_name: String
     match_role: String
+    id_team: Int!
   }
 
   input AddMatchTeamsType {

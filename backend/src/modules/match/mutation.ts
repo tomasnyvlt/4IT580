@@ -140,6 +140,7 @@ type addMatchPlayersArgs = {
     id_user: number;
     match_game_name?: string;
     match_role?: string;
+    id_team: number;
   }>;
 };
 export const addMatchPlayers = async (
@@ -154,6 +155,7 @@ export const addMatchPlayers = async (
         id_player: player.id_user,
         match_game_name: player.match_game_name,
         match_role: player.match_role,
+        id_team: player.id_team
       };
     }),
   });

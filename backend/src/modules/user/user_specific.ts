@@ -32,7 +32,8 @@ export const userTeams = async (
 type userEventsArgs = {
   teamId: number,
   matchId?: number,
-  eventKey?: string
+  eventKey?: string,
+  season?: string
 }
 export const userEvents = async (parent: parentUser, args: userEventsArgs,context: Context) => {
   const prisma = context.prisma;
@@ -48,7 +49,7 @@ export const userEvents = async (parent: parentUser, args: userEventsArgs,contex
   if(args.matchId){
     return await getEventsForUserInMatch(prisma, parent.id, args.matchId, eventTypeId);
   } else {
-    return await getEventsForUserInTeam(prisma, parent.id, args.teamId, eventTypeId);
+    return await getEventsForUserInTeam(prisma, parent.id, args.teamId, eventTypeId, args.season);
   }
 }
 
@@ -69,12 +70,12 @@ const getEventsForUserInMatch = async (prisma:PrismaClient, userId: number, matc
   return formatEvents(match.event);
 }
 
-const getEventsForUserInTeam = async (prisma:PrismaClient, userId:number, teamId: number, eventId: number|undefined) =>{
+const getEventsForUserInTeam = async (prisma:PrismaClient, userId:number, teamId: number, eventId?: number, season?: string) =>{
   const events:event[] = [];
   const matchRows = await prisma.match_has_team.findMany({
     where: {
       id_team: teamId,
-      state: "accepted"
+      state: "accepted",
     },
     include: {
       match: {
@@ -82,15 +83,16 @@ const getEventsForUserInTeam = async (prisma:PrismaClient, userId:number, teamId
           event: {
             where: {
               user_id_user: userId,
-              id_event_type: eventId
+              id_event_type: eventId,
             }
           }
-        }
+        },
       }
     }
   });
   matchRows.forEach((match) => {
     match.match.event.forEach((event) => {
+      if(match.match.season != season) return;
       events.push(event);
     })
   })

@@ -12,6 +12,7 @@ const resolvers: IResolvers<any, Context> = {
     invited_players: teamSpecific.teamInvitedPlayers,
     admins: teamSpecific.teamAdmins,
     team_meta_data: teamSpecific.teamMetaData,
+    matches: teamSpecific.teamMatches
   },
 };
 

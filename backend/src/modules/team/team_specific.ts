@@ -1,5 +1,6 @@
-import { formatPlayers } from '../../utils/format.js';
-import { teamArgs } from './query.js';
+import { formatPlayers } from "../../utils/format.js";
+import { GQLError } from "../../utils/return_statements/errors.js";
+import { teamArgs } from "./query.js";
 
 export const teamPlayers = async (
   parent: teamArgs,
@@ -28,7 +29,7 @@ export const teamInvitedPlayers = async (
       team_has_players: {
         some: {
           id_team: parent.id_team,
-          state: 'invited',
+          state: "invited",
         },
       },
     },
@@ -46,7 +47,7 @@ export const teamAdmins = async (
       team_has_players: {
         some: {
           id_team: parent.id_team,
-          state: 'admin',
+          state: "admin",
         },
       },
     },
@@ -65,4 +66,19 @@ export const teamMetaData = async (
     },
   });
   return teamMetaData.slice(0, 20);
+};
+
+export const teamMatches = async (
+  parent: teamArgs,
+  _: void,
+  context: Context
+) => {
+  const teamMatches = await context.prisma.match.findMany({
+    where: {
+      match_has_team: {
+        some: { id_team: parent.id_team },
+      },
+    },
+  });
+  return teamMatches.slice(0, 20);
 };

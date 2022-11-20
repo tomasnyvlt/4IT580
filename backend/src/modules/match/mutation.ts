@@ -6,7 +6,7 @@ const crypto = require("crypto");
 
 type addMatchArgs = {
   time_start?: string;
-  state: match_state;
+  state?: match_state;
   id_league?: number;
   season: seasons;
 };
@@ -19,7 +19,7 @@ export const addMatch = async (
     data: {
       edit_hash: generateHashOfLength(32),
       time_start: args.time_start? new Date(args.time_start): null,
-      state: args.state,
+      state: args?.state,
       id_league: args?.id_league,
       season: args?.season,
     },

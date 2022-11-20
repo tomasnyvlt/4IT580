@@ -88,7 +88,7 @@ model match {
   id_match       Int              @id @default(autoincrement()) @db.UnsignedInt
   time_created   DateTime?        @default(now()) @db.DateTime(0)
   time_start     DateTime?        @db.DateTime(0)
-  state          match_state
+  state          match_state      @default(pending)
   edit_hash      String           @db.VarChar(255)
   id_league      Int?             @db.UnsignedInt
   season         seasons          @default(s2023)

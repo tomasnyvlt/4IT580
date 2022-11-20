@@ -5,6 +5,7 @@ query TeamDetail($id: Int!) {
     image_url
     players {
       firstName
+      lastName
     }
     invited_players {
       firstName
@@ -15,6 +16,22 @@ query TeamDetail($id: Int!) {
     team_meta_data {
       key
       value
+    }
+    matches {
+      id_match
+      time_created
+      time_start
+      state
+      edit_hash
+      id_league
+      teams {
+        name
+      }
+      season
+      events(teamId: $id) {
+        id_event
+        timeHappened
+      }
     }
   }
 }

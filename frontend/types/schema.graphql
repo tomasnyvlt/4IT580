@@ -9,6 +9,15 @@ type Query {
   playerInTeams(id_user: Int): [Team_has_players!]!
   teamsMetaData: [Team_meta_data!]!
   teamMetaData(id_team: Int!): [Team_meta_data!]!
+  matches: [Match!]!
+  match(id_match: Int!): Match!
+  matchesBySeason(season: seasons!): [Match!]!
+  leagues: [League!]!
+  league(id_league: Int!): League!
+  match_editors: [Match_editor]
+  match_editor(id_match_editor: Int!): Match_editor!
+  events: [EventType!]!
+  event(idEvent: Int!): Event!
 }
 
 type Mutation {
@@ -45,6 +54,57 @@ type Mutation {
     id_team: Int
   ): Team_meta_data!
   deleteTeamMetaData(id_team_meta_data: Int!): String!
+  addMatch(
+    time_start: String
+    state: match_state!
+    id_league: Int
+    season: seasons
+  ): Match!
+  addMatchTeams(id_match: Int!, teams: [AddMatchTeamsType!]!): String!
+  addMatchPlayers(id_match: Int!, players: [AddMatchPlayersType!]!): String!
+  deleteMatch(id_match: Int!): String!
+  updateMatch(
+    id_match: Int!
+    state: match_state
+    id_league: Int
+    season: seasons
+    time_start: String
+  ): Match!
+  updateMatchTeamsState(
+    id_team: Int!
+    id_match: Int!
+    state: match_has_team_state!
+  ): String!
+  deleteMatchTeams(pairs: [DeleteMatchTeamsPairsType!]!): String!
+  addLeague(name: String!, description: String, image_url: String!): League!
+  deleteLeague(id_league: Int!): String!
+  updateLeague(
+    id_league: Int!
+    name: String
+    description: String
+    image_url: String
+  ): League!
+  addMatchEditor(
+    first_name: String!
+    last_name: String!
+    user_id_user: Int
+    match_id_match: Int!
+  ): Match_editor!
+  deleteMatchEditor(id_match_editor: Int!, match_id_match: Int!): String!
+  updateMatchEditor(
+    id_match_editor: Int!
+    match_id_match: Int!
+    first_name: String
+    last_name: String
+    user_id_user: Int
+  ): Match_editor!
+  addEvent(
+    eventTypeKey: String!
+    matchId: Int!
+    userId: Int!
+    time: String!
+    recieverUserId: Int
+  ): Event
 }
 
 type User {
@@ -55,6 +115,7 @@ type User {
   timeRegistered: String!
   timeLastLogin: String!
   teams: [Team!]!
+  events(teamId: Int!, matchId: Int, eventKey: String): [Event]!
 }
 
 type EventType {
@@ -76,6 +137,7 @@ type Team {
   invited_players: [User!]!
   admins: [User!]!
   team_meta_data: [Team_meta_data!]!
+  matches: [Match]
 }
 
 enum team_has_players_state {
@@ -101,4 +163,101 @@ type Team_meta_data {
   key: String!
   value: String
   id_team: Int!
+}
+
+enum match_state {
+  pending
+  accepted
+  running
+  done
+}
+
+enum match_has_team_state {
+  invited
+  accepted
+  declined
+}
+
+enum seasons {
+  s2013
+  s2014
+  s2015
+  s2016
+  s2017
+  s2018
+  s2019
+  s2020
+  s2021
+  s2022
+  s2023
+}
+
+type Match {
+  id_match: Int!
+  time_created: String
+  time_start: String
+  state: match_state!
+  edit_hash: String!
+  id_league: Int
+  teams: [Team]
+  match_editors: [Match_editor]
+  events(teamId: Int!): [Event]!
+  match_players: [MatchPlayers!]
+  season: seasons!
+}
+
+type MatchPlayers {
+  id: Int!
+  firstName: String!
+  lastName: String!
+  email: String!
+  timeRegistered: String!
+  timeLastLogin: String!
+  teams: [Team!]!
+  events(teamId: Int!, matchId: Int, eventKey: String): [Event]!
+  match_game_name: String
+  match_role: [String]
+}
+
+input AddMatchPlayersType {
+  id_user: Int!
+  match_game_name: String
+  match_role: String
+}
+
+input AddMatchTeamsType {
+  id_team: Int
+  state: match_has_team_state
+}
+
+input DeleteMatchTeamsPairsType {
+  id_team: Int
+  id_match: Int
+}
+
+type League {
+  id_league: Int!
+  name: String!
+  description: String
+  image_url: String!
+  admin: User
+  teams: [Team]
+}
+
+type Match_editor {
+  id_match_editor: Int!
+  first_name: String!
+  last_name: String!
+  user_id_user: Int
+  match_id_match: Int!
+}
+
+type Event {
+  id_event: Int!
+  timeHappened: String!
+  match: Match!
+  eventType: EventType!
+  user: User!
+  counterEvent: Event
+  recieverUserId: Int
 }

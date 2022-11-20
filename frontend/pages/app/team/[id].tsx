@@ -1,18 +1,32 @@
 import { ParsedUrlQuery } from "querystring";
 
-import { gql } from "@apollo/client";
 import { EmailIcon, PhoneIcon } from "@chakra-ui/icons";
-import { Avatar, Box, Container, Flex, Heading, Icon, Image, Select, SimpleGrid, Text, chakra } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Flex,
+  Heading,
+  Icon,
+  Image,
+  Select,
+  SimpleGrid,
+  Text,
+  chakra
+} from "@chakra-ui/react";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createColumnHelper } from "@tanstack/table-core";
 import { NextPage } from "next";
+import Link from "next/link";
 import { useState } from "react";
 
 import client from "apollo/client";
 import Basic from "components/cards/Basic";
 import AuthorizedPage from "components/layouts/AuthorizedPage";
 import DataTable from "components/ui/DataTable";
-import { Team as TeamProps, TeamDetailDocument } from "types/generated-types";
+import config from "config";
+import { Match, TeamDetailDocument, Team as TeamProps } from "types/generated-types";
 
 interface TeamDetailPageProps {
   team: TeamProps;
@@ -30,7 +44,7 @@ interface PlayerProps {
   season: string;
 }
 
-const fakePlayersData2021: PlayerProps[] = [...Array(12)].map((_, index) => {
+const fakePlayersData2023: PlayerProps[] = [...Array(12)].map((_, index) => {
   return {
     name: `${index} Honza Bílý`,
     role: "Obrana",
@@ -40,7 +54,7 @@ const fakePlayersData2021: PlayerProps[] = [...Array(12)].map((_, index) => {
     canadianGols: 10,
     averageCanadianGols: 2,
     pinalityMinutes: 4,
-    season: "2020-2021"
+    season: "s2023"
   };
 });
 
@@ -54,13 +68,43 @@ const fakePlayersData2022: PlayerProps[] = [...Array(12)].map((_, index) => {
     canadianGols: 6,
     averageCanadianGols: 2,
     pinalityMinutes: 3,
-    season: "2021-2022"
+    season: "s2022"
   };
 });
 
-const fakePlayersData = [...fakePlayersData2021, ...fakePlayersData2022];
+const fakePlayersData = [...fakePlayersData2023, ...fakePlayersData2022];
 
 const columnHelper = createColumnHelper<PlayerProps>();
+const matchesColumnHelper = createColumnHelper<Match>();
+
+const matchesColumns = [
+  matchesColumnHelper.accessor("id_match", {
+    cell: (info) => info.getValue(),
+    header: "ID"
+  }),
+  matchesColumnHelper.accessor("teams", {
+    cell: (info) => info.getValue()?.[0]?.name,
+    header: "Domácí"
+  }),
+  matchesColumnHelper.accessor("teams", {
+    cell: (info) => info.getValue()?.[1]?.name,
+    header: "Hosté"
+  }),
+  matchesColumnHelper.accessor("state", {
+    cell: (info) => info.getValue(),
+    header: "Stav zápasu"
+  }),
+  matchesColumnHelper.display({
+    id: "actions",
+    cell: (props) => (
+      <Flex justifyContent="flex-end">
+        <Link passHref href={`/app/match/${props.row.original.id_match}`}>
+          <Button as="a">Detail</Button>
+        </Link>
+      </Flex>
+    )
+  })
+];
 
 const playersColumn = [
   columnHelper.accessor("name", {
@@ -101,10 +145,10 @@ const playersColumn = [
   })
 ];
 
-const seasons = ["2020-2021", "2021-2022"];
-
 const TeamDetailPage: NextPage<TeamDetailPageProps> = ({ team }) => {
-  const [option, setOption] = useState(" ");
+  const [option, setOption] = useState("s2023");
+
+  console.log(team.matches?.filter((match) => match?.season === option));
 
   return (
     <AuthorizedPage>
@@ -121,16 +165,16 @@ const TeamDetailPage: NextPage<TeamDetailPageProps> = ({ team }) => {
             <Basic heading="Základní informace">
               <Flex flexDirection="column" gap="0.5rem">
                 <Text>
-                  Počet členů: <strong>8</strong>
+                  Počet členů: <strong>{team.players.length}</strong>
                 </Text>
                 <Text>
-                  Datum založení: <strong>20. 12. 2011</strong>
+                  Datum založení: <strong>-</strong>
                 </Text>
                 <Text>
-                  Počet vyhraných zápasů: <chakra.strong color="green.400">10</chakra.strong>
+                  Počet vyhraných zápasů: <chakra.strong color="green.400">-</chakra.strong>
                 </Text>
                 <Text>
-                  Počet prohraných zápasů: <chakra.strong color="red.400">0</chakra.strong>
+                  Počet prohraných zápasů: <chakra.strong color="red.400">-</chakra.strong>
                 </Text>
               </Flex>
             </Basic>
@@ -156,7 +200,7 @@ const TeamDetailPage: NextPage<TeamDetailPageProps> = ({ team }) => {
                   <Flex alignItems="center" justifyContent="center" w="8" h="8" bg="blue.400" borderRadius="50">
                     <Icon as={PhoneIcon} color="#fff" />
                   </Flex>
-                  <Text>+420123412435</Text>
+                  <Text>+420 123 412 435</Text>
                 </Flex>
                 <Flex gap="1rem" alignItems="center">
                   <Flex alignItems="center" justifyContent="center" w="8" h="8" bg="blue.400" borderRadius="50">
@@ -173,7 +217,7 @@ const TeamDetailPage: NextPage<TeamDetailPageProps> = ({ team }) => {
       <Container maxW="6xl" gap="3rem" display="flex" flexDirection="column" mt="6rem">
         <Basic heading="Sezóny" withBackground>
           <Select value={option} onChange={(e) => setOption(e.target.value)}>
-            {seasons.map((season) => {
+            {config.seasons.map((season) => {
               return (
                 <option key={season.toString()} value={season} selected>
                   {season}
@@ -183,16 +227,32 @@ const TeamDetailPage: NextPage<TeamDetailPageProps> = ({ team }) => {
           </Select>
         </Basic>
 
-        <Basic heading="Statistiky" withBackground>
-          <DataTable
-            columns={playersColumn}
-            data={fakePlayersData.filter((data) => {
-              return option === " " ? data : data.season === option;
-            })}
-          />
-        </Basic>
+        {/* TODO: FIX TS IGNORE */}
+        {team.matches?.filter((match) => match?.season === option)?.length! > 0 ? (
+          <Basic heading="Seznam zápasů" withBackground>
+            {
+              // @ts-ignore
+              <DataTable
+                columns={matchesColumns}
+                data={team.matches?.filter((match) => match && match?.season === option) as Match[]}
+              />
+            }
+          </Basic>
+        ) : (
+          <Text>Pro tuto sezónu nejsou žádné zápasy.</Text>
+        )}
 
-        <Basic heading="Statistiky týmu" withBackground />
+        <Basic heading="Statistiky" withBackground>
+          {
+            // @ts-ignore
+            <DataTable
+              columns={playersColumn}
+              data={fakePlayersData.filter((data) => {
+                return option === " " ? data : data.season === option;
+              })}
+            />
+          }
+        </Basic>
       </Container>
     </AuthorizedPage>
   );

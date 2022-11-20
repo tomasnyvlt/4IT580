@@ -1,12 +1,11 @@
 import { Box, Button, Checkbox, Container, Flex, Heading, Select, Stack } from "@chakra-ui/react";
-
 import { createColumnHelper } from "@tanstack/table-core";
-import { UserContext } from "components/contexts/UserContext";
-import Link from "next/link";
-
-// import { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { FC, useContext } from "react";
 import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form";
+
+import { UserContext } from "components/contexts/UserContext";
+import { Match, useMatchAddMutation } from "types/generated-types";
 
 import InputField from "../../shared/hook-form/FormField";
 import DataTable from "../ui/DataTable";
@@ -20,7 +19,7 @@ interface PlayerProps {
 type Team = {
   id_team: string;
   name: string;
-  players: Array<PlayerProps>;
+  players?: Array<PlayerProps>;
   selectedPlayers: Record<string, boolean>;
   goalKeeper: Record<string, boolean>;
 };
@@ -30,22 +29,27 @@ type MatchInputs = {
   teams: Array<Team>;
 };
 
-const CreateMatchForm: FC = () => {
+interface CreateMatcgFormProps {
+  match?: Match;
+}
+
+const CreateMatchForm: FC<CreateMatcgFormProps> = ({ match }) => {
   const { user } = useContext(UserContext);
+  const router = useRouter();
 
   const methods = useForm<MatchInputs>({
     defaultValues: {
       teams: [
         {
-          id_team: "",
-          name: "",
-          selectedPlayers: {},
+          id_team: match?.teams?.[0]?.id_team?.toString() ?? "",
+          name: match?.teams?.[0]?.name ?? "",
+          // selectedPlayers: match?.teams?.[0]?.players ?? [],
           goalKeeper: {}
         },
         {
-          id_team: "",
-          name: "",
-          selectedPlayers: {},
+          id_team: match?.teams?.[1]?.id_team?.toString() ?? "",
+          name: match?.teams?.[1]?.name ?? "",
+          // selectedPlayers: match?.teams?.[1]?.players ?? [{}],
           goalKeeper: {}
         }
       ]
@@ -57,16 +61,27 @@ const CreateMatchForm: FC = () => {
   const { fields } = useFieldArray({
     name: "teams",
     control
+  } as any);
+
+  const [matchAdd] = useMatchAddMutation({
+    variables: {},
+    onCompleted: (data) => router.push(`/app/match/${data.addMatch.id_match}`)
   });
 
   const onSubmit = (data: MatchInputs) => {
+    if (match) {
+      console.log("edit mutace");
+    } else {
+      matchAdd();
+    }
+
     console.log(
       "id_team",
       data.teams.map((team) => team.id_team),
       "selectedPlayers",
       data.teams.map((team) =>
-        Object.keys(team.selectedPlayers).filter((key) => {
-          return team.selectedPlayers[key];
+        Object.keys(team.selectedPlayers).filter((_, index) => {
+          return team.selectedPlayers[index];
         })
       ),
       "goalKeeper",
@@ -83,7 +98,7 @@ const CreateMatchForm: FC = () => {
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Heading as="h3" size="md" textAlign="center" m="2rem">
-          Vyber si tym
+          Vyber týmy a hráče
         </Heading>
 
         {user?.user.teams && user?.user.teams.length > 0 ? (
@@ -107,11 +122,11 @@ const CreateMatchForm: FC = () => {
                 const playersColumn = [
                   columnHelper.accessor("firstName", {
                     cell: (info) => info.getValue(),
-                    header: "jmeno"
+                    header: "Jméno"
                   }),
                   columnHelper.accessor("lastName", {
                     cell: (info) => info.getValue(),
-                    header: "prijmeni"
+                    header: "Příjmení"
                   }),
                   columnHelper.accessor((row) => row, {
                     cell: (info) => {
@@ -133,7 +148,7 @@ const CreateMatchForm: FC = () => {
                         />
                       );
                     },
-                    header: "Bude hrat"
+                    header: "Bude hrát"
                   }),
                   columnHelper.accessor((row) => row, {
                     cell: (info) => {
@@ -153,14 +168,14 @@ const CreateMatchForm: FC = () => {
                         />
                       );
                     },
-                    header: "Brankar"
+                    header: "Brankář"
                   })
                 ];
                 return (
                   <>
                     <InputField key={field.id} name={`teams.${index}.id_team`} Component={Select}>
                       <option key={field.toString()} value="" disabled>
-                        Tady jsou tymy
+                        Tým {index === 0 ? "domácí" : "hosté"}
                       </option>
                       {user.user.teams.map((team) => (
                         <option key={team.id_team} value={Number(team.id_team)}>
@@ -168,7 +183,10 @@ const CreateMatchForm: FC = () => {
                         </option>
                       ))}
                     </InputField>
-                    {selectedTeam && <DataTable columns={playersColumn} data={userTeamPlayer} />}
+                    {selectedTeam && (
+                      // @ts-ignore
+                      <DataTable columns={playersColumn} data={userTeamPlayer} />
+                    )}
                   </>
                 );
               })}
@@ -179,11 +197,10 @@ const CreateMatchForm: FC = () => {
         )}
         <Stack flexDir="row" justifyContent="space-between" m="1rem">
           <Button type="submit" mt="0.5rem">
-            Ulozit
+            Uložit zápas
           </Button>
-          <Link href="/app/matches/start">
-            <Button type="submit">Ulozit a zahajit</Button>
-          </Link>
+
+          {match && <Button type="submit">Uložit a zahájit</Button>}
         </Stack>
       </form>
     </FormProvider>

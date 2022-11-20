@@ -22,6 +22,7 @@
     "@emotion/styled": "^11.10.4",
     "@hookform/resolvers": "^2.9.10",
     "@tanstack/react-table": "^8.5.22",
+    "@tanstack/table-core": "^8.5.30",
     "apollo": "^2.34.0",
     "auth-token": "^0.1.0",
     "framer-motion": "^7.6.1",
@@ -29,9 +30,11 @@
     "jwt-decode": "^3.1.2",
     "next": "^12.1.6",
     "react": "^18.1.0",
+    "react-circular-progressbar": "^2.1.0",
     "react-datepicker": "^4.8.0",
     "react-dom": "^18.1.0",
     "react-hook-form": "^7.38.0",
+    "react-icons": "^4.6.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {

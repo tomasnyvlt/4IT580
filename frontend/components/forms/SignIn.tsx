@@ -27,8 +27,8 @@ const SignInForm: FC = () => {
   const methods = useForm<SignInInputs>({
     resolver: yupResolver(signInFormSchema),
     defaultValues: {
-      email: "test@test.cz",
-      password: "123123"
+      email: "jc@seznam.cz",
+      password: ".123123aA"
     }
   });
 

@@ -1,12 +1,13 @@
-import { AddIcon, ArrowLeftIcon, ArrowRightIcon, ViewIcon } from "@chakra-ui/icons";
+import { AddIcon, ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { Avatar, Box, Button, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { FC, useContext, useState } from "react";
+
 import { AuthContext } from "components/contexts/AuthContext";
 import { UserContext } from "components/contexts/UserContext";
 import NavItem from "components/sidebar/NavItem";
 import { AUTH_TOKEN, REFRESH_TOKEN } from "config";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { FC, useContext, useState } from "react";
 import { useLogoutMutation } from "types/generated-types";
 
 const Sidebar: FC = () => {
@@ -94,8 +95,10 @@ const Sidebar: FC = () => {
           Zápasy
         </Heading>
 
-        <NavItem href="/app/matches/add" title="Přidat zápas" icon={AddIcon} />
+        <NavItem href="/app/match/add" title="Přidat zápas" icon={AddIcon} />
+        {/*
         <NavItem href="#" title="Přehled zápasů" icon={ViewIcon} />
+        */}
       </Flex>
 
       <Flex gap="1rem" p="1rem">
@@ -114,7 +117,7 @@ const Sidebar: FC = () => {
         </Flex>
       </Flex>
       <Button as="a" cursor="pointer" variant="outline" w="100%" onClick={() => logout()} mb="1rem">
-        Logout
+        Odhlásit se
       </Button>
     </Flex>
   );

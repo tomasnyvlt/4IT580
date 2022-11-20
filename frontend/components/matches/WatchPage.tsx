@@ -69,7 +69,7 @@ const WatchPage: FC = () => {
 
   useEffect(() => {
     if (!isPaused) {
-      let interval = setInterval(() => {
+      const interval = setInterval(() => {
         clearInterval(interval);
 
         if (seconds === 0) {
@@ -92,14 +92,16 @@ const WatchPage: FC = () => {
 
   const percentage = 100;
 
-  const addAction = (event) => {
+  // TODO: FIX ANY
+  const addAction = (event: any) => {
     const { value } = event.target;
     setActionType(value);
     setIsModalOpen(!isModalOpen);
     setIsPaused(true);
   };
 
-  const addGol = (event) => {
+  // TODO: FIX ANY
+  const addGol = (event: any) => {
     const { id } = event.target;
     setPlayersWithGoal((current) => [...current, id]);
     console.log(id);
@@ -107,7 +109,8 @@ const WatchPage: FC = () => {
     setIsPaused(false);
   };
 
-  const addFault = (event) => {
+  // TODO: FIX ANY
+  const addFault = (event: any) => {
     const { id } = event.target;
     setPlayersWithFault((current) => [...current, id]);
     console.log(id);

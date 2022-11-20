@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -134,8 +135,11 @@ model match_players {
   user             user    @relation(fields: [id_player], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_players_user1")
   id_player        Int     @db.UnsignedInt
   id_match         Int     @db.UnsignedInt
+  id_team          Int     @db.UnsignedInt
+  team             team    @relation(fields: [id_team], references: [id_team], onDelete: NoAction, onUpdate: NoAction, map: "fk_match_players_team")
 
   @@index([id_match], map: "fk_match_players_match1")
+  @@index([id_team], map: "fk_match_players_team")
 }
 
 model refresh_token {
@@ -156,6 +160,7 @@ model team {
   match_has_team   match_has_team[]
   team_has_players team_has_players[]
   team_meta_data   team_meta_data[]
+  match_players    match_players[]  
 }
 
 model team_has_players {

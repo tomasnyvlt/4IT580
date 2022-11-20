@@ -59,6 +59,7 @@ export const typeDef = gql`
     id_user: Int!
     match_game_name: String
     match_role: String
+    id_team: Int!
   }
 
   input AddMatchTeamsType {
@@ -69,6 +70,16 @@ export const typeDef = gql`
   input DeleteMatchTeamsPairsType {
     id_team: Int
     id_match: Int
+  }
+
+  input MatchTeamType {
+    id_team: Int!
+    match_team_name: String
+    players: [MatchTeamPlayerType!]!
+  }
+  input MatchTeamPlayerType{
+    id_player: Int
+    role: String
   }
 
   extend type Query {
@@ -102,5 +113,6 @@ export const typeDef = gql`
     deleteMatchTeams(
       pairs: [DeleteMatchTeamsPairsType!]!
     ): String!
+    createMatch(time_start: String!, state: match_state, id_league: Int!, season: seasons!, teamStructure1: MatchTeamType, teamStructure2: MatchTeamType): Match!
   }
 `;

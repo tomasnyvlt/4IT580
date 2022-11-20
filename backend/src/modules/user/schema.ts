@@ -9,7 +9,7 @@ export const typeDef = /* GraphQL */ `
         timeRegistered: String!
         timeLastLogin: String!
         teams: [Team!]!
-        events(teamId: Int!, matchId: Int, eventKey: String): [Event]!
+        events(teamId: Int!, matchId: Int, eventKey: String, season: seasons): [Event]!
     }
 
     extend type Query{

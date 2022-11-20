@@ -46,7 +46,6 @@ export const matchEvents = async (
   context: Context
 ) => {
   const prisma = context.prisma;
-  console.log("args.teamId", args.teamId);
   const match = await prisma.match.findFirst({
     where: {
       id_match: parent.id_match,
@@ -67,9 +66,6 @@ export const matchEvents = async (
             },
           },
         },
-        orderBy: {
-          time_happened: "asc",
-        },
       },
     },
   });
@@ -79,6 +75,18 @@ export const matchEvents = async (
   const events = match.event.filter((event) => {
     return event.user.team_has_players.length != 0;
   });
+  // Sort events by time
+  events.sort((a:event, b:event) => {
+    if(a.time_happened == null || b.time_happened == null) throw new Error("No time_happened value.");
+    const aDate = new Date();
+    const aTimeParts = a.time_happened.split(":");
+    aDate.setHours(Number.parseInt(aTimeParts[0]), Number.parseInt(aTimeParts[1]));
+
+    const bDate = new Date();
+    const bTimeParts = b.time_happened.split(":");
+    bDate.setHours(Number.parseInt(bTimeParts[0]), Number.parseInt(bTimeParts[1]));
+    return aDate > bDate ? 1 : -1;
+  })
   return formatEvents(events);
 };
 

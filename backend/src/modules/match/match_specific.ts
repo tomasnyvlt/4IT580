@@ -76,17 +76,24 @@ export const matchEvents = async (
     return event.user.team_has_players.length != 0;
   });
   // Sort events by time
-  events.sort((a:event, b:event) => {
-    if(a.time_happened == null || b.time_happened == null) throw new Error("No time_happened value.");
+  events.sort((a: event, b: event) => {
+    if (a.time_happened == null || b.time_happened == null)
+      throw new Error("No time_happened value.");
     const aDate = new Date();
     const aTimeParts = a.time_happened.split(":");
-    aDate.setHours(Number.parseInt(aTimeParts[0]), Number.parseInt(aTimeParts[1]));
+    aDate.setHours(
+      Number.parseInt(aTimeParts[0]),
+      Number.parseInt(aTimeParts[1])
+    );
 
     const bDate = new Date();
     const bTimeParts = b.time_happened.split(":");
-    bDate.setHours(Number.parseInt(bTimeParts[0]), Number.parseInt(bTimeParts[1]));
+    bDate.setHours(
+      Number.parseInt(bTimeParts[0]),
+      Number.parseInt(bTimeParts[1])
+    );
     return aDate > bDate ? 1 : -1;
-  })
+  });
   return formatEvents(events);
 };
 
@@ -116,4 +123,68 @@ export const matchPlayers = async (
       match_role: new Set(player.match_players.map((row) => row.match_role)),
     };
   });
+};
+
+export const matchScore = async (
+  parent: { id_match: number },
+  _: void,
+  context: Context
+) => {
+  const scoredID = 3;
+  const scoreEvents = await context.prisma.event.findMany({
+    where: {
+      AND: [
+        {
+          id_match: {
+            equals: parent.id_match,
+          },
+        },
+        {
+          id_event_type: {
+            equals: scoredID,
+          },
+        },
+      ],
+    },
+    select: {
+      user_id_user: true,
+    },
+  });
+  const userIDs = scoreEvents.map((e) => e.user_id_user);
+  const matchPlayersByMatchID = await context.prisma.match_players.findMany({
+    where: {
+      AND: [
+        {
+          id_match: { equals: parent.id_match },
+        },
+        {
+          id_player: { in: userIDs },
+        },
+      ],
+    },
+    select: {
+      match_game_name: true,
+      id_player: true,
+    },
+  });
+
+  let score: Array<{
+    name: string | null;
+    points: number;
+  }> = [];
+  matchPlayersByMatchID.forEach((r) => {
+    const getScore = () => {
+      let count = 0;
+      userIDs.forEach((id) => {
+        if (id === r.id_player) count = count + 1;
+      });
+      return count;
+    };
+    const scoreCount = getScore();
+    score.push({
+      name: r.match_game_name,
+      points: scoreCount,
+    });
+  });
+  return score;
 };

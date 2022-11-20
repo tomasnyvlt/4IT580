@@ -1,0 +1,6 @@
+mutation confirmReg($confirmationCode: String!) {
+    confirmRegistration(confirmationCode: $confirmationCode) {
+      accessToken
+      refreshToken
+    }
+  }

@@ -8,7 +8,11 @@
     "buildTest": "NEXT_PUBLIC_ENV=test next build",
     "startDev": "NEXT_PUBLIC_ENV=development next start",
     "startTest": "NEXT_PUBLIC_ENV=test next start",
-    "codegen": "graphql-codegen --config codegen.ts"
+    "codegen": "graphql-codegen --config codegen.ts",
+    "lint": "eslint . --ext=js,jsx,ts,tsx"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "yarn lint --fix"
   },
   "dependencies": {
     "@apollo/client": "^3.7.0",
@@ -17,7 +21,8 @@
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@hookform/resolvers": "^2.9.10",
-    "@tanstack/react-table": "^8.5.22",
+    "@tanstack/react-table": "8.5.22",
+    "@tanstack/table-core": "8.5.22",
     "apollo": "^2.34.0",
     "auth-token": "^0.1.0",
     "framer-motion": "^7.6.1",
@@ -25,9 +30,11 @@
     "jwt-decode": "^3.1.2",
     "next": "^12.1.6",
     "react": "^18.1.0",
+    "react-circular-progressbar": "^2.1.0",
     "react-datepicker": "^4.8.0",
     "react-dom": "^18.1.0",
     "react-hook-form": "^7.38.0",
+    "react-icons": "^4.6.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {
@@ -36,7 +43,9 @@
     "@graphql-codegen/client-preset": "^1.1.1",
     "@graphql-codegen/introspection": "2.2.1",
     "@graphql-codegen/typescript": "^2.8.0",
-    "@graphql-codegen/typescript-operations": "^2.5.5",
+    "@graphql-codegen/typescript-operations": "^2.5.6",
+    "@graphql-codegen/typescript-react-apollo": "^3.3.6",
+    "@graphql-codegen/typescript-urql": "^3.7.3",
     "@types/graphql": "^14.5.0",
     "@types/node": "^17.0.31",
     "@types/react": "^18.0.9",
@@ -57,6 +66,8 @@
     "eslint-plugin-react-hooks": "^4.4.0",
     "eslint-plugin-standard": "^5.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "husky": "^8.0.2",
+    "lint-staged": "^13.0.3",
     "prettier": "2.7.1",
     "typescript": "^4.6.4"
   }

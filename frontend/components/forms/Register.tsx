@@ -4,9 +4,8 @@ import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { object, ref, string } from "yup";
 
-import { useMutation } from "components/hooks/useMutation";
-import { REGISTER_MUTATION } from "components/mutations/register";
 import InputField from "shared/hook-form/FormField";
+import { useRegisterMutationMutation } from "types/generated-types";
 
 type RegisterInputs = {
   email: string;
@@ -26,8 +25,8 @@ const registerFormSchema = object().shape({
     .min(8, "Heslo má obsahovat minimalně 8 znáku")
     .required()
     .label("Heslo")
-    .matches(/\w*[a-z]\w*/, "Heslo má obsahovat velké písmeno")
-    .matches(/\w*[A-Z]\w*/, "Heslo má obsahovat malé písmeno")
+    .matches(/\w*[a-z]\w*/, "Heslo má obsahovat malé písmeno")
+    .matches(/\w*[A-Z]\w*/, "Heslo má obsahovat velké písmeno")
     .matches(/\d/, "Heslo má obsahovat číslo")
     .required()
     .label("Heslo"),
@@ -53,7 +52,7 @@ const RegisterForm: FC = () => {
     }
   });
 
-  const [register] = useMutation(REGISTER_MUTATION, {
+  const [register] = useRegisterMutationMutation({
     onCompleted: () => {
       toast({
         title: "Na váše email jsme poslali potvrzení registrace.",
@@ -63,29 +62,20 @@ const RegisterForm: FC = () => {
         duration: 9000,
         isClosable: true
       });
-    },
-    onError: (error) =>
-      toast({
-        title: error.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true
-      })
+    }
   });
 
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit } = methods;
 
   const onSubmit = (data: RegisterInputs) => {
     register({
       variables: {
         firstName: data.firstName,
         lastName: data.lastName,
-        userName: data.email,
         email: data.email,
         password: data.password
       }
     });
-    reset();
   };
 
   return (

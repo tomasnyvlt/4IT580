@@ -6,11 +6,9 @@ import { FormProvider, useForm } from "react-hook-form";
 import { object, string } from "yup";
 
 import { AuthContext } from "components/contexts/AuthContext";
-import { useMutation } from "components/hooks/useMutation";
-import { LOGIN_MUTATION } from "components/mutations/login";
-import { LoginTokens } from "components/types/graphql";
 import { AUTH_TOKEN, REFRESH_TOKEN } from "config";
 import InputField from "shared/hook-form/FormField";
+import { LoginTokens, useLoginMutationMutation } from "types/generated-types";
 
 type SignInInputs = {
   email: string;
@@ -29,12 +27,12 @@ const SignInForm: FC = () => {
   const methods = useForm<SignInInputs>({
     resolver: yupResolver(signInFormSchema),
     defaultValues: {
-      email: "test@test.cz",
-      password: "123123"
+      email: "jc@seznam.cz",
+      password: ".123123aA"
     }
   });
 
-  const [login] = useMutation(LOGIN_MUTATION, {
+  const [login] = useLoginMutationMutation({
     onCompleted: (data: { login: LoginTokens }) => {
       localStorage.setItem(AUTH_TOKEN, data.login.accessToken);
       localStorage.setItem(REFRESH_TOKEN, data.login.refreshToken);

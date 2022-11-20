@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { JWT_SECRET, REFRESH_SECRET } from '../config/variables.js';
 import { GQLError } from '../utils/return_statements/errors.js';
 import { createAppUser, createErrorThrowingUser, createUnloggedUser} from '../types/AppUser.js';
+import crypto from 'crypto';
 
 /**
  * Creates a access token for user.
@@ -85,4 +86,9 @@ export async function verifyRefreshToken(token:string){
   } catch{
     throw new GQLError().notAuthenticated()
   }
+}
+
+export function generateHashOfLength(length: number){
+  if(length % 2 == 1) return crypto.randomBytes((length+1)/2).toString("hex").slice(0, length);
+  return crypto.randomBytes(length/2).toString("hex");
 }

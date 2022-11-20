@@ -1,12 +1,13 @@
-import { Box, Container, Heading, Link, Text } from "@chakra-ui/react";
+import { Box, Container, Heading, Text } from "@chakra-ui/react";
 import { NextPage } from "next";
 
 import SignInForm from "components/forms/SignIn";
-import Landing from "components/layouts/Landing";
+import LandingPage from "components/layouts/LandingPage";
+import SportifyLink from "components/ui/SportifyLink";
 
 const SignInPage: NextPage = () => {
   return (
-    <Landing>
+    <LandingPage>
       <Container>
         <Heading as="h1" textAlign="center" mt="6rem">
           Přihlášení do aplikace Sportify
@@ -17,13 +18,10 @@ const SignInPage: NextPage = () => {
         </Box>
 
         <Text textAlign="center" mt="6rem">
-          Nemáte ještě účet?{" "}
-          <Link color="teal.500" href="/register">
-            Zaregistrujte se!
-          </Link>
+          Nemáte ještě účet? <SportifyLink href="/register">Zaregistrujte se!</SportifyLink>
         </Text>
       </Container>
-    </Landing>
+    </LandingPage>
   );
 };
 

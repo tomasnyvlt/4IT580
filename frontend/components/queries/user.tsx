@@ -11,6 +11,11 @@ export const USER_QUERY = gql`
         id_team
         name
         image_url
+        players {
+          firstName
+          lastName
+          id
+        }
       }
     }
   }

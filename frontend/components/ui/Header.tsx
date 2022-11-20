@@ -8,7 +8,7 @@ const Header: FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
   return (
-    <Box py={{ base: "1rem", sm: "2rem" }} borderBottom="1px solid" borderColor="gray.400">
+    <Box as="header" py={{ base: "1rem", sm: "2rem" }} borderBottom="1px solid" borderColor="gray.400">
       <Container maxW="6xl" display="flex" alignItems="center" justifyContent="space-between">
         <Link href="/" passHref>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}

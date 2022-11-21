@@ -582,7 +582,7 @@ export type MatchDetailQueryVariables = Exact<{
 }>;
 
 
-export type MatchDetailQuery = { __typename?: 'Query', match: { __typename?: 'Match', id_match: number, time_created?: string | null, time_start?: string | null, state: Match_State, edit_hash: string, id_league?: number | null, teams?: Array<{ __typename?: 'Team', id_team?: number | null, name?: string | null } | null> | null } };
+export type MatchDetailQuery = { __typename?: 'Query', match: { __typename?: 'Match', id_match: number, time_created?: string | null, time_start?: string | null, state: Match_State, edit_hash: string, id_league?: number | null, teams?: Array<{ __typename?: 'Team', id_team?: number | null, name?: string | null } | null> | null, score?: Array<{ __typename?: 'MatchScore', name: string, points: number } | null> | null } };
 
 export type TeamDetailQueryVariables = Exact<{
   id: Scalars['Int'];
@@ -785,6 +785,10 @@ export const MatchDetailDocument = gql`
     teams {
       id_team
       name
+    }
+    score {
+      name
+      points
     }
   }
 }

@@ -27,6 +27,10 @@ query TeamDetail($id: Int!) {
       teams {
         name
       }
+      score {
+        name
+        points
+      }
       season
       events(teamId: $id) {
         id_event

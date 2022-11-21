@@ -10,5 +10,9 @@ query matchDetail($id: Int!) {
             id_team
             name
         }
+        score {
+            name
+            points
+        }
     }
 }

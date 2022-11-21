@@ -35,7 +35,7 @@ const MatchDetailPage: NextPage<MatchDetailPageProps> = ({ match }) => {
             {
               pending: <CreateMatchForm match={match} />,
               running: <WatchPage />,
-              done: <MatchDone />,
+              done: <MatchDone match={match} />,
               accepted: <Box />
             }[match.state]
           }

@@ -17,29 +17,8 @@ type RegisterLoginArgs = {
 }
 export const registerLogin = async(_:void, args: RegisterLoginArgs, context: Context) => {
     const prisma = context.prisma;
-    /// Validation block
-    try{
-        await registerLoginValidation.validate(args);
-    } catch(err:any) {
-        switch(err.path){
-            case "password": {
-                if(err.type == "min") throw new GQLError().wrongPasswordLength();
-                throw new GQLError().invalidPasswordContent();
-            }
-            case "email": {
-                throw new GQLError().invalidEmail();
-            }
-            case "firstName": {
-                throw new GQLError().invalidArgument("firstName");
-            }
-            case "lastName": {
-                throw new GQLError().invalidArgument("lastName");
-            }
-            default: {
-                throw new GQLError().error(err.message, "ERR");
-            }
-        }
-    }
+    /// Validation - function will throw GQLError with correct error message
+    await validateRegisterArgs(args);
 
     /// DB check
     const userEmail = await prisma.user.findFirst({
@@ -170,12 +149,38 @@ const deleteOldConfirmationTokens = async (prisma:any) => {
         }
     });
 }
+
 const addDays = (date: Date, days: number) => {
     return new Date(date.valueOf()+24*60*60*1000*days);
 }
+
 const addMinutes = (date: Date, minutes: number) => {
     return new Date(date.valueOf()+60*1000*minutes);
 }
 
+const validateRegisterArgs = async (registerArgs:RegisterLoginArgs) => {
+    try{
+        await registerLoginValidation.validate(registerArgs);
+    } catch(err:any) {
+        switch(err.path){
+            case "password": {
+                if(err.type == "min") throw new GQLError().wrongPasswordLength();
+                throw new GQLError().invalidPasswordContent();
+            }
+            case "email": {
+                throw new GQLError().invalidEmail();
+            }
+            case "firstName": {
+                throw new GQLError().invalidArgument("firstName");
+            }
+            case "lastName": {
+                throw new GQLError().invalidArgument("lastName");
+            }
+            default: {
+                throw new GQLError().error(err.message, "ERR");
+            }
+        }
+    }
+}
 
 const emailPatern = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;

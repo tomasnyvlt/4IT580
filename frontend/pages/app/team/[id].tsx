@@ -90,6 +90,10 @@ const matchesColumns = [
     cell: (info) => info.getValue()?.[1]?.name,
     header: "Hosté"
   }),
+  matchesColumnHelper.accessor("score", {
+    cell: (info) => `${info.getValue()?.[0]?.points} : ${info.getValue()?.[1]?.points}`,
+    header: "Skóre"
+  }),
   matchesColumnHelper.accessor("state", {
     cell: (info) => info.getValue(),
     header: "Stav zápasu"

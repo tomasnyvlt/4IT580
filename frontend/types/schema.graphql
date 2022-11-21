@@ -56,7 +56,7 @@ type Mutation {
   deleteTeamMetaData(id_team_meta_data: Int!): String!
   addMatch(
     time_start: String
-    state: match_state!
+    state: match_state
     id_league: Int
     season: seasons
   ): Match!
@@ -76,6 +76,14 @@ type Mutation {
     state: match_has_team_state!
   ): String!
   deleteMatchTeams(pairs: [DeleteMatchTeamsPairsType!]!): String!
+  createMatch(
+    time_start: String!
+    state: match_state
+    id_league: Int!
+    season: seasons!
+    teamStructure1: MatchTeamType
+    teamStructure2: MatchTeamType
+  ): Match!
   addLeague(name: String!, description: String, image_url: String!): League!
   deleteLeague(id_league: Int!): String!
   updateLeague(
@@ -115,7 +123,12 @@ type User {
   timeRegistered: String!
   timeLastLogin: String!
   teams: [Team!]!
-  events(teamId: Int!, matchId: Int, eventKey: String): [Event]!
+  events(
+    teamId: Int!
+    matchId: Int
+    eventKey: String
+    season: seasons
+  ): [Event]!
 }
 
 type EventType {
@@ -192,6 +205,11 @@ enum seasons {
   s2023
 }
 
+type MatchScore {
+  name: String!
+  points: Int!
+}
+
 type Match {
   id_match: Int!
   time_created: String
@@ -204,6 +222,7 @@ type Match {
   events(teamId: Int!): [Event]!
   match_players: [MatchPlayers!]
   season: seasons!
+  score: [MatchScore]
 }
 
 type MatchPlayers {
@@ -223,6 +242,7 @@ input AddMatchPlayersType {
   id_user: Int!
   match_game_name: String
   match_role: String
+  id_team: Int!
 }
 
 input AddMatchTeamsType {
@@ -233,6 +253,17 @@ input AddMatchTeamsType {
 input DeleteMatchTeamsPairsType {
   id_team: Int
   id_match: Int
+}
+
+input MatchTeamType {
+  id_team: Int!
+  match_team_name: String
+  players: [MatchTeamPlayerType!]!
+}
+
+input MatchTeamPlayerType {
+  id_player: Int
+  role: String
 }
 
 type League {
